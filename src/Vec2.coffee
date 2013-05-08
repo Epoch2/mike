@@ -75,5 +75,3 @@ class MC.Vec2
     @x = len * Math.cos(angle)
     @y = len * Math.sin(angle)
     @restAngle = 0
-
-window.Vec2 = Vec2
