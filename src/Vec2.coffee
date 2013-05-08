@@ -18,38 +18,38 @@ class MC.Vec2
   sqrdDistTo: (vec) -> @minus(vec).sqrdLength()
   distTo: (vec) -> Math.sqrt(@sqrdDistTo(vec));
 
-  sqrt: -> new Vec2(Math.sqrt(@x), Math.sqrt(@y))
-  sqrd: -> new Vec2(@x*@x, @y*@y)
+  sqrt: -> new MC.Vec2(Math.sqrt(@x), Math.sqrt(@y))
+  sqrd: -> new MC.Vec2(@x*@x, @y*@y)
 
-  unit: -> len = @length(); new Vec2(@x/len, @y/len)
+  unit: -> len = @length(); new MC.Vec2(@x/len, @y/len)
   normalize: -> len = @length(); @x /= len; @y /= len;
 
-  copy: -> new Vec2(@x, @y)
+  copy: -> new MC.Vec2(@x, @y)
   set: (x, y) -> @x = x; @y = y;
   equals: (vec) -> @x is vec.x and @y is vec.y
 
   add: (vec) -> @x += vec.x; @y += vec.y;
-  plus: (vec) -> new Vec2(@x+vec.x, @y+vec.y)
+  plus: (vec) -> new MC.Vec2(@x+vec.x, @y+vec.y)
   subtract: (vec) -> @x -= vec.x; @y -= vec.y;
-  minus: (vec) -> new Vec2(@x-vec.x, @y-vec.y)
+  minus: (vec) -> new MC.Vec2(@x-vec.x, @y-vec.y)
 
-  times_v: (vec) -> new Vec2(@x*vec.x, @y*vec.y)
-  times_s: (scalar) -> new Vec2(@x*scalar, @y*scalar)
+  times_v: (vec) -> new MC.Vec2(@x*vec.x, @y*vec.y)
+  times_s: (scalar) -> new MC.Vec2(@x*scalar, @y*scalar)
   multiply_v: (vec) -> @x *= vec.x; @y *= vec.y;
   multiply_s: (scalar) -> @x *= scalar; @y *= scalar;
 
   divide_v: (vec) -> @x /= vec.x; @y /= vec.y;
   divide_s: (scalar) -> @x /= scalar; @y /= scalar;
-  dividedWith_v: (vec) -> new Vec2(@x/vec.x, @y/vec.y)
-  dividedWith_s: (scalar) -> new Vec2(@x/scalar, @y/scalar)
+  dividedWith_v: (vec) -> new MC.Vec2(@x/vec.x, @y/vec.y)
+  dividedWith_s: (scalar) -> new MC.Vec2(@x/scalar, @y/scalar)
 
   dot: (vec) -> @x*vec.x + @y*vec.y
   cross: (vec) -> @x*vec.y - @y*vec.x
 
   projectedOnto: (vec) -> dir = vec.unit(); dir.times_s(@dot(dir))
 
-  perpCCW: -> new Vec2(-@y, @x);
-  perpCW: -> new Vec2(@y, -@x);
+  perpCCW: -> new MC.Vec2(-@y, @x);
+  perpCW: -> new MC.Vec2(@y, -@x);
 
   midpoint: (vec, mp) -> @times_s(1-mp).plus(vec.times_s(mp))
 
@@ -58,7 +58,7 @@ class MC.Vec2
     angle = @angle()
     angle -= tiltAngle;
     len = @length()
-    new Vec2(len * Math.cos(angle), len * Math.sin(angle))
+    new MC.Vec2(len * Math.cos(angle), len * Math.sin(angle))
 
   rotate: (tiltAngle) ->
     @restAngle += tiltAngle

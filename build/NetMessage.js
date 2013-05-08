@@ -251,9 +251,9 @@ userreq = {
 
   if (typeof window === "undefined" || window === null) {
     module.exports = exports;
-    exports.Message = Message;
+    exports.NetMessage = NetMessage;
   } else {
-    window.Message = Message;
+    window.NetMessage = NetMessage;
   }
 
 }).call(this);
