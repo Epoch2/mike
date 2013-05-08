@@ -38,10 +38,10 @@ class MC.Vec2
   multiply_v: (vec) -> @x *= vec.x; @y *= vec.y;
   multiply_s: (scalar) -> @x *= scalar; @y *= scalar;
 
-  devide_v: (vec) -> @x /= vec.x; @y /= vec.y;
-  devide_s: (scalar) -> @x /= scalar; @y /= scalar;
-  devidedWith_v: (vec) -> new Vec2(@x/vec.x, @y/vec.y)
-  devidedWith_s: (scalar) -> new Vec2(@x/scalar, @y/scalar)
+  divide_v: (vec) -> @x /= vec.x; @y /= vec.y;
+  divide_s: (scalar) -> @x /= scalar; @y /= scalar;
+  dividedWith_v: (vec) -> new Vec2(@x/vec.x, @y/vec.y)
+  dividedWith_s: (scalar) -> new Vec2(@x/scalar, @y/scalar)
 
   dot: (vec) -> @x*vec.x + @y*vec.y
   cross: (vec) -> @x*vec.y - @y*vec.x
@@ -67,7 +67,6 @@ class MC.Vec2
     len = @length()
     @x = len * Math.cos(angle)
     @y = len * Math.sin(angle)
-
 
   restoreRotation: ->
     angle = @angle()

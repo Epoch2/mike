@@ -16,7 +16,7 @@ class MC.Particle
 
     @applyForce(@vel.times_s(-@airResistance))
 
-    @vel.add(@forces.devidedWith_s(@mass).times_s(dt))
+    @vel.add(@forces.dividedWith_s(@mass).times_s(dt))
 
     @currPos.add(@vel)
     @forces.set(0,0,0)
