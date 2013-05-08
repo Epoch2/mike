@@ -1,4 +1,4 @@
-class Keyboard
+class MC.Keyboard
   self = this;
   @keyDownEvents = new Array()
   @keyUpEvents = new Array()

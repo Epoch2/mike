@@ -1,4 +1,4 @@
-class Vec2
+class MC.Vec2
   constructor: (@x, @y) -> @restAngle = 0;
 
   @vecClosestToDir: (dir, vecs) ->
