@@ -7,7 +7,7 @@ class MC.Keyboard
     # Trigger a key DOWN event if it exists in the keyDownEvents array
     onKeyDown = (event) ->
       for downEvent in self.keyDownEvents
-        if downEvent.key is event.keyCode and downEvent.triggered is not true
+        if downEvent.key is event.keyCode and downEvent.triggered isnt true
           downEvent.triggered = true
           downEvent.callback()
 
