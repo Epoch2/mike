@@ -40,7 +40,7 @@ niceColor = ->
   letters = "56789abcdef".split("")
   color = "#"
   for i in [0.. 5]
-      color += letters[Math.floor(Math.random()*(letters.length-1))]
+    color += letters[Math.floor(Math.random()*(letters.length-1))]
   color
 
 #particle = new Particle(new Vec2(canvas.width/2,canvas.height/2), 10, niceColor(), new Vec2(0,0))
@@ -80,9 +80,9 @@ gameLoop = ->
 
   # Update physics in PYSICS_DT chunks
   while accumulator >= PHYSICS_DT
-      update(PHYSICS_DT)
-      t += PHYSICS_DT
-      accumulator -= PHYSICS_DT
+    update(PHYSICS_DT)
+    t += PHYSICS_DT
+    accumulator -= PHYSICS_DT
 
   # Render with blending
   blending = accumulator / PHYSICS_DT
