@@ -2,12 +2,11 @@
 <html>
     <head>
         <title>Coffee test</title>
-
-        <!-- Style -->
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <!--<div class="box">
+        <!-- USER INTERFACE -->
+        <!--<div class="box" id="intro">
             <header>
                 <h1>Game Title</h1>
             </header>
@@ -25,7 +24,7 @@
             </p>
         </div>-->
 
-        <div class="box">
+        <div class="box" id="scoreboard">
             <header>
                 <h1>Score board</h1>
             </header>
@@ -117,21 +116,29 @@
                 <a href="horizon.adsa.se">New Horizon website</a>
             </p>
         </div>
-
+        
+        <!-- CANVAS -->
         <canvas>Your browser doesn't support the canvas element.</canvas>
 
-        <!-- Javascript -->
+        <!-- JAVASCRIPT -->
+        <!-- namespace -->
+        <script>
+            var MC = MC || {};
+            var MS = MS || {};
+        </script>
+        <!-- lib -->
         <script src="lib/stats.min.js"></script>
         <script src="lib/three.min.js"></script>
         <script src="lib/jquery-1.9.1.min.js"></script>
-        <script src="build/netclient.js"></script>
-        <script src="build/Maths.js"></script>
-        <script src="build/Vec2.js"></script>
-        <script src="build/Vec3.js"></script>
-        <script src="build/Keyboard.js"></script>
-        <script src="build/Particle.js"></script>
-        <script src="build/Spring.js"></script>
-        <script src="build/Snake.js"></script>
-        <script src="build/Game.js"></script>
+        <!-- server interface -->
+        <!-- ... -->
+        <!-- game -->
+        <script src="../build/Maths.js"></script>
+        <script src="../build/Vec2.js"></script>
+        <script src="../build/Keyboard.js"></script>
+        <script src="../build/Particle.js"></script>
+        <script src="../build/Spring.js"></script>
+        <script src="../build/Snake.js"></script>
+        <script src="../build/Game.js"></script>
     </body>
 </html>

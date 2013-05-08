@@ -43,8 +43,8 @@ niceColor = ->
     color += letters[Math.floor(Math.random()*(letters.length-1))]
   color
 
-#particle = new Particle(new Vec2(canvas.width/2,canvas.height/2), 10, niceColor(), new Vec2(0,0))
-player = new Snake(new Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
+#particle = new MC.Particle(new Vec2(canvas.width/2,canvas.height/2), 10, niceColor(), new Vec2(0,0))
+player = new MC.Snake(new MC.Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
 
 update = (dt) ->
   player.update(dt)
@@ -59,13 +59,6 @@ MAX_RENDER_DT = 1000/30
 window.t = 0;
 currentTime = performance.now()
 accumulator = 0
-
-{
-  xpos: x,
-  ypos: y,
-}
-
-
 
 gameLoop = ->
   fpsStats.begin()
@@ -99,31 +92,31 @@ requestAnimationFrame(gameLoop)
 ###
 
 # Up key
-Keyboard.bind("press", {
-  key: 38,
-  callback: (-> player.move = true)
+MC.Keyboard.bind("press", {
+    key: 38,
+    callback: (-> player.move = true)
 });
-Keyboard.bind("release", {
-  key: 38,
-  callback: (-> player.move = false)
+MC.Keyboard.bind("release", {
+    key: 38,
+    callback: (-> player.move = false)
 });
 
 # Right key
-Keyboard.bind("press", {
-  key: 39,
-  callback: (-> player.right = true)
+MC.Keyboard.bind("press", {
+    key: 39,
+    callback: (-> player.right = true)
 });
-Keyboard.bind("release", {
-  key: 39,
-  callback: (-> player.right = false)
+MC.Keyboard.bind("release", {
+    key: 39,
+    callback: (-> player.right = false)
 });
 
 # Left key
-Keyboard.bind("press", {
-  key: 37,
-  callback: (-> player.left = true)
+MC.Keyboard.bind("press", {
+    key: 37,
+    callback: (-> player.left = true)
 });
-Keyboard.bind("release", {
-  key: 37,
-  callback: (-> player.left = false)
+MC.Keyboard.bind("release", {
+    key: 37,
+    callback: (-> player.left = false)
 });

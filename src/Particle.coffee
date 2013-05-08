@@ -1,12 +1,12 @@
-class Particle
+class MC.Particle
   constructor: (pos, @radius, @color, @forces) ->
     dencity = 0.001
     @mass = Math.PI * @radius * @radius * dencity
     @airResistance = @radius * @radius * 0.00001
 
-    @prevPos = new Vec2(pos.x, pos.y)
-    @currPos = new Vec2(pos.x, pos.y)
-    @vel = new Vec2(0,0)
+    @prevPos = new MC.Vec2(pos.x, pos.y)
+    @currPos = new MC.Vec2(pos.x, pos.y)
+    @vel = new MC.Vec2(0,0)
 
   applyForce: (force) ->
     @forces.add(force)
@@ -28,5 +28,3 @@ class Particle
     ctx.closePath()
     ctx.fillStyle = @color
     ctx.fill()
-
-window.Particle = Particle

@@ -1,4 +1,4 @@
-class Keyboard
+class MC.Keyboard
 
     self = this;
     @keyDownEvents = new Array()
@@ -64,5 +64,3 @@ class Keyboard
                     @keyUpEvents.splice(i, 1)
                     break
         undefined
-
-window.Keyboard = Keyboard
