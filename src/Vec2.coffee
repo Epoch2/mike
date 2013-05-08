@@ -76,5 +76,4 @@ class MC.Vec2
     @y = len * Math.sin(angle)
     @restAngle = 0
 
-
 window.Vec2 = Vec2
