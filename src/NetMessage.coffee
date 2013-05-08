@@ -172,6 +172,6 @@ class NetMessage
 
 if not window?
   module.exports = exports
-  exports.Message = Message
+  exports.NetMessage = NetMessage
 else
-  window.Message = Message
+  window.NetMessage = NetMessage
