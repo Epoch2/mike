@@ -1,6 +1,5 @@
 class MC.Snake
   constructor: (position, color, @name) ->
-
     @dir = new MC.Vec2(-1, 0)
     @move = false
     @left = false
@@ -52,8 +51,6 @@ class MC.Snake
     @dir.rotate(MC.Maths.toRadians(0.5)) if @left and @move
     @dir.rotate(MC.Maths.toRadians(Math.sin(@iterations+=0.04))) if @move
     @particles[0].vel.add(@dir.times_s(0.005)) if @move
-
-
 
     for particle in @particles
       particle.update(dt)

@@ -35,7 +35,6 @@ resizeWindow()
 window.ctx = canvas.getContext("2d")
 
 # Game logic
-
 niceColor = ->
   letters = "56789abcdef".split("")
   color = "#"
@@ -96,27 +95,30 @@ MC.Keyboard.bind("press", {
     key: 38,
     callback: (-> player.move = true)
 });
+
 MC.Keyboard.bind("release", {
     key: 38,
     callback: (-> player.move = false)
-});
+})
 
 # Right key
 MC.Keyboard.bind("press", {
     key: 39,
     callback: (-> player.right = true)
-});
+})
+
 MC.Keyboard.bind("release", {
     key: 39,
     callback: (-> player.right = false)
-});
+})
 
 # Left key
 MC.Keyboard.bind("press", {
     key: 37,
     callback: (-> player.left = true)
-});
+})
+
 MC.Keyboard.bind("release", {
     key: 37,
     callback: (-> player.left = false)
-});
+})
