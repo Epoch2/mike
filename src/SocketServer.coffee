@@ -8,7 +8,6 @@ class ClientConnection extends Emitter
   constructor: (@ws, @callback) ->
     @ID = undefined
     @authenticated = false
-    @callbacks = {}
 
     @ws.on "message", (message) =>
       @emit "message", NMS.deserialize(message)
@@ -35,3 +34,6 @@ class SocketServer extends Emitter
     @wss.on "connection", (ws) =>
       client = new ClientConnection(ws)
       @emit "new", client
+
+module.exports = exports
+exports.SocketServer = SocketServer
