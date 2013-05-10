@@ -4,9 +4,9 @@ class Particle
     @mass = Math.PI * @radius * @radius * dencity
     @airResistance = @radius * @radius * 0.00001
 
-    @prevPos = new MC.Vec2(pos.x, pos.y)
-    @currPos = new MC.Vec2(pos.x, pos.y)
-    @vel = new MC.Vec2(0,0)
+    @prevPos = new MIKE.Vec2(pos.x, pos.y)
+    @currPos = new MIKE.Vec2(pos.x, pos.y)
+    @vel = new MIKE.Vec2(0,0)
 
   applyForce: (force) ->
     @forces.add(force)
@@ -33,4 +33,4 @@ if not window?
   module.exports = exports
   exports.Particle = Particle
 else
-  MC.Particle = Particle
+  MIKE.Particle = Particle

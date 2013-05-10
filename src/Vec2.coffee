@@ -80,4 +80,4 @@ if not window?
   module.exports = exports
   exports.Vec2 = Vec2
 else
-  MC.Vec2 = Vec2
+  MIKE.Vec2 = Vec2

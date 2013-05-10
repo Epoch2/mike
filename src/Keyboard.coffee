@@ -60,8 +60,4 @@ class Keyboard
           @keyUpEvents.splice(i, 1)
           break
 
-if not window?
-  module.exports = exports
-  exports.Keyboard = Keyboard
-else
-  MC.Keyboard = Keyboard
+MIKE.Keyboard = Keyboard

@@ -42,8 +42,8 @@ niceColor = ->
     color += letters[Math.floor(Math.random()*(letters.length-1))]
   color
 
-#particle = new MC.Particle(new Vec2(canvas.width/2,canvas.height/2), 10, niceColor(), new Vec2(0,0))
-player = new MC.Snake(new MC.Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
+#particle = new MIKE.Particle(new Vec2(canvas.width/2,canvas.height/2), 10, niceColor(), new Vec2(0,0))
+player = new MIKE.Snake(new MIKE.Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
 
 update = (dt) ->
   player.update(dt)
@@ -91,34 +91,34 @@ requestAnimationFrame(gameLoop)
 ###
 
 # Up key
-MC.Keyboard.bind("press", {
+MIKE.Keyboard.bind("press", {
     key: 38,
     callback: (-> player.move = true)
 });
 
-MC.Keyboard.bind("release", {
+MIKE.Keyboard.bind("release", {
     key: 38,
     callback: (-> player.move = false)
 })
 
 # Right key
-MC.Keyboard.bind("press", {
+MIKE.Keyboard.bind("press", {
     key: 39,
     callback: (-> player.right = true)
 })
 
-MC.Keyboard.bind("release", {
+MIKE.Keyboard.bind("release", {
     key: 39,
     callback: (-> player.right = false)
 })
 
 # Left key
-MC.Keyboard.bind("press", {
+MIKE.Keyboard.bind("press", {
     key: 37,
     callback: (-> player.left = true)
 })
 
-MC.Keyboard.bind("release", {
+MIKE.Keyboard.bind("release", {
     key: 37,
     callback: (-> player.left = false)
 })
