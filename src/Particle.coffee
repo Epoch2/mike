@@ -1,4 +1,4 @@
-class MC.Particle
+class Particle
   constructor: (pos, @radius, @color, @forces) ->
     dencity = 0.001
     @mass = Math.PI * @radius * @radius * dencity
@@ -28,3 +28,9 @@ class MC.Particle
     ctx.closePath()
     ctx.fillStyle = @color
     ctx.fill()
+
+if not window?
+  module.exports = exports
+  exports.Particle = Particle
+else
+  MC.Particle = Particle
