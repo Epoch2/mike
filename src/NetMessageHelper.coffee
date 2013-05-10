@@ -48,7 +48,7 @@ class NetMessageHelper
       return "1"
 
   # Assertions
-  # Key is message code, value is function that asserts messages with said code
+  # @ASSERT_TYPE[CODE] = function to assert messages of type CODE
 
   @ASSERT_TYPE = {}
   @ASSERT_TYPE[@CODES.INV] = (msg) => return msg.type is @CODES.INV and assertKeys(msg, {"string": ["color"], "number": ["gameStart"]})
