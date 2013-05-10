@@ -1,15 +1,16 @@
 class Emitter
-  @callbacks = {}
-  emit: (event, arg) ->
-    callback(arg) for evt, callback of @callbacks when evt is event and typeof callback is "function"
+  callbacks = {}
+  emit: (event, args...) ->
+    try
+      callback.apply(this, args) for evt, callback of callbacks when evt is event and typeof callback is "function"
 
   on: (event, callback) ->
     do(=>
-      @callbacks[event] = callback
+      callbacks[event] = callback
     ) if typeof event is "string" and typeof callback is "function"
 
 if not window?
   module.exports = exports
   exports.Emitter = Emitter
 else
-  MC.Emitter = Emitter
+  MIKE.Emitter = Emitter
