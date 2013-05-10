@@ -8,4 +8,4 @@ if not window?
   module.exports = exports
   exports.Maths = Maths
 else
-  MC.Maths = Maths
+  MIKE.Maths = Maths

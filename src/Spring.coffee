@@ -4,7 +4,7 @@ class Spring
   solve: ->
     springVec = @particle2.currPos.minus(@particle1.currPos)
     len = springVec.length()
-    force = new MC.Vec2(0,0)
+    force = new MIKE.Vec2(0,0)
     # Contraction force
     force.add(springVec.unit().times_s(len - @springLen).times_s(@springConst)) if len != 0
     # Friction force
@@ -18,4 +18,4 @@ if not window?
   module.exports = exports
   exports.Spring = Spring
 else
-  MC.Spring = Spring
+  MIKE.Spring = Spring
