@@ -1,7 +1,8 @@
 SocketServer = require("./SocketServer.js").SocketServer
 Emitter = require("./Emitter.js").Emitter
-ColorHelper = require("./ColorHelper").ColorHelper
-CODES = require("./NetMessageHelper.js").NetMessageHelper.CODES
+ColorUtil = require("./ColorUtil").ColorUtil
+MS = require("./NetMessage").MessageSerializer
+CODES = require("./NetMessage").Codes.CODES
 
 class MikeClient extends Emitter
   constructor: (@connection) ->
@@ -9,27 +10,20 @@ class MikeClient extends Emitter
       @emit "message", (msg)
 
     @connection.on "close", (code, reason) =>
-      @emit "close", (code, reason)
+      @emit "close", code, reason
 
   sendInvite: (color) ->
-    @connection.transmit {
+    @connection.transmit MS.serialize({
       type: CODES.INV,
       color: color
-    }
+    })
 
   sendUpdate: (state) ->
-    @connection.transmit {
-      type: CODES.POS_UPD,
-      x: state.x,
-      y: state.y,
-      dx: state.dx,
-      dy: state.dy,
-      dir: state.dir
-    }
+    @connection.transmit MS.serialize(state)
 
 class MikeServer
-  constructor: () ->
-    @socketserver = new SocketServer()
+  constructor: (config) ->
+    @socketserver = new ConnectionServer(config)
     @clients = []
     @activeColors = []
 
@@ -49,6 +43,7 @@ class MikeServer
         addClient(client) if msg.color is client.color and msg.accept
 
       when CODES.MOV_UPD
+        a = "empty"
         # ...
 
   addClient: (client) ->
@@ -56,8 +51,9 @@ class MikeServer
       client.ID = @IDs
       @IDs++
       # Make sure client is removed upon disconnect
+      # (null pointer prevention)
       client.on "close", (code, reason) =>
-        @delClientByID(client.ID)
+        @delClient(client)
       @clients.push(client)
 
   delClient: (client) ->
@@ -78,7 +74,7 @@ class MikeServer
       comparison = 1
       while comparison >= 0.8
         newColor = niceColor()
-        comparison = Math.max(comparison, ColorHelper.compareColors(newColor, color)) for color in @activeColors
+        comparison = Math.max(comparison, ColorUtil.compareColors(newColor, color)) for color in @activeColors
       callback(newColor)
     )
 
