@@ -1,4 +1,4 @@
-Vec2 = require("./Vec2").Vec2
+Vec2 = require("./Vec2.js").Vec2
 
 class NetMessageHelper
   @CODE_LENGTH = 2
