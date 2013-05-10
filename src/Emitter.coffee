@@ -1,4 +1,5 @@
 class Emitter
+  @callbacks = {}
   emit: (event, arg) ->
     callback(arg) for evt, callback of @callbacks when evt is event and typeof callback is "function"
 
