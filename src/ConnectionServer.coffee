@@ -22,7 +22,7 @@ class ClientConnection extends Emitter
     catch error
       return error
 
-class SocketServer extends Emitter
+class ConnectionServer extends Emitter
   constructor: (@config) ->
     server = if @config.https is true then https.createServer(config) else http.createServer()
     server.listen(@config.port or 1337)
