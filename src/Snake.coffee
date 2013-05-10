@@ -1,4 +1,4 @@
-class MC.Snake
+class Snake
   constructor: (position, color, @name) ->
     @dir = new MC.Vec2(-1, 0)
     @move = false
@@ -54,3 +54,9 @@ class MC.Snake
 
     for particle in @particles
       particle.update(dt)
+
+if not window?
+  module.exports = exports
+  exports.Snake = Snake
+else
+  MC.Snake = Snake

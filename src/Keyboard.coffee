@@ -1,4 +1,4 @@
-class MC.Keyboard
+class Keyboard
   self = this;
   @keyDownEvents = new Array()
   @keyUpEvents = new Array()
@@ -59,3 +59,9 @@ class MC.Keyboard
         if boundEvent.key is upEvent.key and boundEvent.callback is upEvent.callback
           @keyUpEvents.splice(i, 1)
           break
+
+if not window?
+  module.exports = exports
+  exports.Keyboard = Keyboard
+else
+  MC.Keyboard = Keyboard

@@ -1,4 +1,4 @@
-class MC.Spring
+class Spring
   constructor: (@particle1, @particle2, @springConst, @springLen, @frictionConst) ->
 
   solve: ->
@@ -13,3 +13,9 @@ class MC.Spring
     # Apply equal and oposite forces
     @particle1.applyForce(force) if @particle1.head != true
     @particle2.applyForce(force.times_s(-1))
+
+if not window?
+  module.exports = exports
+  exports.Spring = Spring
+else
+  MC.Spring = Spring
