@@ -1,0 +1,27 @@
+class ColorHelper
+  @rgbToHex = (r, g, b) ->
+    return "" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+
+  @hexToRgb = (hex) ->
+    out = {}
+    result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    return {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    }
+
+  @compareColors = (color1, color2) ->
+    # Compares two colors for similarity.
+    # Returns a number between 0 and 1
+    # where 1 are identical colors
+    # and 0 are opposites (such as #FFFFFF
+    # vs #000000)
+
+    color1 = hexToRgb(color1)
+    color2 = hexToRgb(color2)
+
+    return ((441-Math.sqrt((color2.r-color1.r)^2+(color2.g-color1.g)^2+(color2.b-color1.b)^2))/441)
+
+module.exports = exports
+exports.SocketServer = SocketServer
