@@ -1,8 +1,15 @@
-class ColorHelper
+class ColorUtil
+  @niceColor: ->
+    letters = "0123456789abcdef".split("")
+    color = "#"
+    for i in [0.. 5]
+      color += letters[Math.floor(Math.random()*(letters.length-1))]
+    return color
+
   @rgbToHex = (r, g, b) ->
     return "" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
 
-  @hexToRgb = (hex) ->
+  @hexToRgb: (hex) ->
     out = {}
     result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
     return {
@@ -11,7 +18,7 @@ class ColorHelper
       b: parseInt(result[3], 16)
     }
 
-  @compareColors = (color1, color2) ->
+  @compareColors: (color1, color2) ->
     # Compares two colors for similarity.
     # Returns a number between 0 and 1
     # where 1 are identical colors
@@ -24,4 +31,4 @@ class ColorHelper
     return ((441-Math.sqrt((color2.r-color1.r)^2+(color2.g-color1.g)^2+(color2.b-color1.b)^2))/441)
 
 module.exports = exports
-exports.SocketServer = SocketServer
+exports.ColorUtil = ColorUtil
