@@ -1,4 +1,6 @@
+SocketServer = require("./SocketServer.js").SocketServer
 Emitter = require("./Emitter.js").Emitter
+ColorHelper = require("./ColorHelper").ColorHelper
 CODES = require("./NetMessageHelper.js").NetMessageHelper.CODES
 
 class MikeClient extends Emitter
@@ -11,29 +13,35 @@ class MikeClient extends Emitter
 
   sendInvite: (color) ->
     @connection.transmit {
-      type: NMS.INV,
+      type: CODES.INV,
       color: color
     }
 
   sendUpdate: (state) ->
-    # ...
-
+    @connection.transmit {
+      type: CODES.POS_UPD,
+      x: state.x,
+      y: state.y,
+      dx: state.dx,
+      dy: state.dy,
+      dir: state.dir
+    }
 
 class MikeServer
   constructor: () ->
-    @netserver = new NetServer()
+    @socketserver = new SocketServer()
     @clients = []
-    @IDs = 0
+    @activeColors = []
 
-    @netserver.on "new", (connection) =>
+    @socketserver.on "new", (connection) =>
       client = new MikeClient(connection)
 
       client.on "message", (msg) =>
         @handleClientMessage(msg, client)
 
-      color = genColor()
-      client.color = color
-      client.sendInvite(color)
+      genColor (color) =>
+        client.color = color
+        client.sendInvite(color)
 
   handleClientMessage: (msg, client) ->
     switch msg.type
@@ -65,9 +73,18 @@ class MikeServer
   getClientCount: ->
     return @clients.length
 
-genColor = ->
+  genColor: (callback)->
+    process.nextTick(->
+      comparison = 1
+      while comparison >= 0.8
+        newColor = niceColor()
+        comparison = Math.max(comparison, ColorHelper.compareColors(newColor, color)) for color in @activeColors
+      callback(newColor)
+    )
+
+niceColor = ->
   letters = "56789abcdef".split("")
   color = "#"
   for i in [0.. 5]
     color += letters[Math.floor(Math.random()*(letters.length-1))]
-  color
+  return color
