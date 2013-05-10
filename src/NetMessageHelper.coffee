@@ -1,4 +1,4 @@
-
+Vec2 = require("./Vec2").Vec2
 
 class NetMessageHelper
   @CODE_LENGTH = 2
@@ -15,7 +15,7 @@ class NetMessageHelper
     #
     # In the example below the object 'pos' is asserted
     # to contain two numbers with the keys 'x' and 'y' and
-    # one boolean with the key "isCoordinate"
+    # a boolean with the key "isCoordinate"
     #
     # assert(pos, {
     # "number": ["x"] ["y"],
@@ -49,11 +49,12 @@ class NetMessageHelper
 
   # Assertions
   # Key is message code, value is function that asserts messages with said code
+
   @ASSERT_TYPE = {}
   @ASSERT_TYPE[@CODES.INV] = (msg) => return msg.type is @CODES.INV and assertKeys(msg, {"string": ["color"], "number": ["gameStart"]})
   @ASSERT_TYPE[@CODES.INV_RES] = (msg) => return msg.type is @CODES.INV_RES and assertKeys(msg, {"boolean": ["accept"], "string": ["color"]})
   @ASSERT_TYPE[@CODES.MOV_UPD] = (msg) => return msg.type is @CODES.MOV_UPD and assertKeys(msg, {"boolean": ["move", "left", "right"]})
-  @ASSERT_TYPE[@CODES.POS_UPD] = (msg) => return msg.type is @CODES.POS_UPD and assertKeys(msg, {"number": ["x", "y", "dir", "dx", "dy"]})
+  @ASSERT_TYPE[@CODES.POS_UPD] = (msg) => return msg.type is @CODES.POS_UPD and assertKeys(msg, {"number": ["x", "y", "dx", "dy", "dir"]})
 
   @serialize: (msg_obj) ->
     return false unless @assertType(msg_obj, msg_obj.type)
@@ -73,8 +74,11 @@ class NetMessageHelper
         do(->out += compressBool(msg_obj[bool])) for bool in bools
 
       when @CODES.POS_UPD
-        numbers = ["x", "y", "dir", "dx", "dy"]
+        numbers = ["x", "y", "dx", "dy", "dir"]
         do(->out += msg_obj[number]) for number in numbers
+        out += dir.x
+        out += dir.y
+        out += dir.restAngle
 
       else
         return false
@@ -82,9 +86,9 @@ class NetMessageHelper
     return out
 
   @deserialize: (msg_raw) ->
-    return false unless msg_raw.length isnt >= @CODE_LENGTH #catch empty messages
+    return false unless msg_raw.length isnt >= @CODE_LENGTH       #catch empty messages
     type = msg_raw[..(@CODE_LENGTH-1)]
-    return false unless type in @CODES                      #catch invalid types
+    return false unless type in @CODES                            #catch invalid types
     out = {type: type}
 
     switch type
@@ -105,12 +109,18 @@ class NetMessageHelper
         out.right = msg_raw[@CODE_LENGTH+2]
 
       when @CODES.POS_UPD
-        return false unless msg_raw.length is @CODE_LENGTH+25     # 25 = 5 char for each (x, y, dir, dx, dy)
-        keys = ["x", "y", "dir", "dx", "dy"]
+        return false unless msg_raw.length is @CODE_LENGTH+25     # 35 = 5 char for each (x, y, dx, dy) + 15 chars dir
+        keys = ["x", "y", "dx", "dy"]
         i = @CODE_LENGTH
         for key in keys
           out[key] = msg_raw[i..(i+4)]
           i++
+        keys = ["x", "y", "restAngle"]
+        vec = []
+        for key in keys
+          vec.push(msg_raw[i..(i+4)])
+          i++
+        out.dir = new Vec2(vec[0], vec[1], vec[2])
 
       else
         return false
