@@ -1,5 +1,5 @@
 class Vec2
-  constructor: (@x, @y) -> @restAngle = 0;
+  constructor: (@x, @y, restAngle) -> @restAngle = restAngle or 0; # Allow recreation of vector with intact restAngle for serialization purposes
 
   @vecClosestToDir: (dir, vecs) ->
     closest = vecs[0]
