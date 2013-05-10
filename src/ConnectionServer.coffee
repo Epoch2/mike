@@ -1,26 +1,8 @@
 WebSocketServer = require("ws").Server
 https = require("https")
 http = require("http")
-NMS = require("./NetMessageHelper.js").NetMessageHelper
+Connection = require("./Connection.js").Connection
 Emitter = require("./Emitter.js").Emitter
-
-class ClientConnection extends Emitter
-  constructor: (@ws, @callback) ->
-    @ID = undefined
-    @authenticated = false
-
-    @ws.on "message", (message) =>
-      @emit "message", NMS.deserialize(message)
-
-    @ws.on "close", (code, reason) =>
-      @emit "close"
-
-  transmit: (msgObject) ->
-    try
-      @ws.send(NMS.serialize(msgObject))
-      return null
-    catch error
-      return error
 
 class ConnectionServer extends Emitter
   constructor: (@config) ->
@@ -29,11 +11,9 @@ class ConnectionServer extends Emitter
 
     @wss = new WebSocketServer({server: server})
 
-    @callbacks = {}
-
     @wss.on "connection", (ws) =>
-      client = new ClientConnection(ws)
+      client = new Connection(ws)
       @emit "new", client
 
 module.exports = exports
-exports.SocketServer = SocketServer
+exports.ConnectionServer = ConnectionServer
