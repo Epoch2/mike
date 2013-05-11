@@ -15,8 +15,8 @@ class Snake
     springFriction = 0.00005
 
     # Build snake
-    @particles = new Array()
-    @springs = new Array()
+    @particles = []
+    @springs = []
 
     # Particles
     pos = new MIKE.Vec2(position.x, position.y)
