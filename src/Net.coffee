@@ -3,10 +3,10 @@ if not window?
 else
   Vec2 = MIKE.Vec2
 
-class NetCodes
+class NetTypes
   # Static
-  @CODE_LENGTH = 2
-  @CODES = {
+  @TYPE_LENGTH: 2
+  @TYPES: {
     INV: "00",
     INV_RES: "01",
     MOV_UPD: "02",
@@ -17,41 +17,49 @@ class MessageSerializer
   # Public
   # Static
 
-  @DELIMITER = "|"
+  @TYPES: NetTypes.TYPES
+  @TYPE_LENGTH: NetTypes.TYPE_LENGTH
+  @DELIMITER: "|"
+  @OBJECT_IDENT: "@"
 
   # Assertion methods
-  @ASSERTIONS = {}
-  @ASSERTIONS[@CODES.INV] = (msg) => return msg.type is @CODES.INV and assertKeys(msg.data, {"string": ["color"], "number": ["gameStart"]})
-  @ASSERTIONS[@CODES.INV_RES] = (msg) => return msg.type is @CODES.INV_RES and assertKeys(msg.data, {"boolean": ["accept"], "string": ["color"]})
-  @ASSERTIONS[@CODES.MOV_UPD] = (msg) => return msg.type is @CODES.MOV_UPD and assertKeys(msg.data, {"boolean": ["move", "left", "right"]})
-  @ASSERTIONS[@CODES.POS_UPD] = (msg) => return msg.type is @CODES.POS_UPD and assertKeys(msg.data, {"number": ["x", "y", "dx", "dy",], "object": ["dir"]})
+  @ASSERTIONS: {}
+  @ASSERTIONS[@TYPES.INV] = (data) => return @assertKeys(data, {"string": ["color"], "number": ["gameStart"]})
+  @ASSERTIONS[@TYPES.INV_RES] = (data) => return @assertKeys(data, {"boolean": ["accept"], "string": ["color"]})
+  @ASSERTIONS[@TYPES.MOV_UPD] = (data) => return @assertKeys(data, {"boolean": ["move", "left", "right"]})
+  @ASSERTIONS[@TYPES.POS_UPD] = (data) => return @assertKeys(data, {"number": ["x", "y", "dx", "dy",], "object": ["dir"]})
 
-  # Serialization orders
-  @SERIALIZATION_ORDERS = {}
-  @SERIALIZATION_ORDERS[@CODES.INV] = ["color", "gameStart"],
-  @SERIALIZATION_ORDERS[@CODES.INV_RES] = ["accept", "color"],
-  @SERIALIZATION_ORDERS[@CODES.MOV_UPD] = ["move", "left", "right"],
-  @SERIALIZATION_ORDERS[@CODES.POS_UPD] = ["x", "y", "dx", "dy", "dir"]
+  # Compression patterns
+  @COMPRESSION_PATTERNS: {}
+  @COMPRESSION_PATTERNS[@TYPES.INV] = ["color", "gameStart"]
+  @COMPRESSION_PATTERNS[@TYPES.INV_RES] = ["accept", "color"]
+  @COMPRESSION_PATTERNS[@TYPES.MOV_UPD] = ["move", "left", "right"]
+  @COMPRESSION_PATTERNS[@TYPES.POS_UPD] = ["x", "y", "dx", "dy", "dir"]
 
   # Classes with serialization methods
-  @COMPRESSIBLE = [Vec2]
+  @COMPRESSIBLE_CLASSES: [Vec2]
+
+  # Decompression keys
+  @OBJECT_KEYS: {
+    ">": Vec2
+  }
 
   @serialize: (msg_obj) ->
-    return false unless @assertType(msg_obj.data, msg_obj.data.type)
+    return false unless @assertType(msg_obj.type, msg_obj.data)
     out = msg_obj.type #always prepend fixed length type
     out += @compress(msg_obj.type, msg_obj.data)
     return out
 
   @deserialize: (msg_raw) ->
-    return false unless msg_raw.length >= @CODE_LENGTH            #catch empty messages
-    type = msg_raw[..(@CODE_LENGTH-1)]
-    return false unless type in @CODES                            #catch invalid types
+    return false unless msg_raw.length >= @TYPE_LENGTH
+    type = @pullTypeFrom(msg_raw)
+    msg_raw = @removeTypeFrom(msg_raw)
     out = {
       type: type,
       data: null
     }
 
-    out.data = @decompress(type, msg_raw[@CODE_LENGTH..])
+    out.data = @decompress(type, msg_raw)
     return out
 
   @compress: (type, data) ->
@@ -61,38 +69,55 @@ class MessageSerializer
     # JSON.stringify
 
     out = ""
-    if type in @SERIALIZATION_ORDERS
-      for key in @SERIALIZATION_ORDERS[type]
+    if type of @COMPRESSION_PATTERNS
+      # Type has compression pattern
+      for key in @COMPRESSION_PATTERNS[type]
         out += @DELIMITER
         d = data[key]
-        if typeof d is object
-          for cla in @COMPRESSIBLE
+        if typeof d is "object"
+          for cla in @COMPRESSIBLE_CLASSES
             if d instanceof cla
-              if "serialize" in cla
-                out += cla.serialize(d)
+              # d is of compressible class
+              if "serialize" of cla
+                # d's class has serialization methods
+                out += (@OBJECT_IDENT + cla.serialize(d))
                 break
               else
                 throw "Cannot serialize object of type #{cla}"
         else
-          out += "#{@DELIMITER}#{data[key]}"
+          out += "#{data[key]}"
     else
       out += JSON.stringify(data)
     return out
 
   @decompress: (type, data) ->
     out = {}
-    if type in @SERIALIZATION_ORDERS
-      for key in @SERIALIZATION_ORDERS[type]
-        vals = data.split(@DELIMITER)
-        do(=> out[key] = val) for val in vals
-
+    if type of @COMPRESSION_PATTERNS
+      # Type has compression pattern
+      vals = data.split(@DELIMITER)
+      i = 0
+      for key in @COMPRESSION_PATTERNS[type]
+        val = vals[i]
+        if val[0] is @OBJECT_IDENT
+          # This val is an object
+          # Deserialize it correctly by determining its type with the type identifier at val[1]
+          (out[key] = cla.deserialize(val); break) for id, cla of @OBJECT_KEYS when id is val[1]
+        else
+          out[key] = val
+        i++
     else
       out = JSON.parse(data)
     return out
 
-  @assertType: (obj, type) ->
-    assertion = @ASSERTIONS[type]
-    return assertion(obj)
+  @pullTypeFrom: (msg_raw) ->
+    return msg_raw.substring(0, @TYPE_LENGTH)
+
+  @removeTypeFrom: (msg_raw) ->
+    # Returns message stripped of its type (and the delimiter succeeding the type)
+    return msg_raw.substring(@TYPE_LENGTH+1)
+
+  @assertType: (type, obj) ->
+    return @ASSERTIONS[type](obj)
 
   @typeOf: (obj) ->
     return Number(type) for type, assertion of @ASSERTIONS when assertion(obj)
@@ -119,7 +144,7 @@ class MessageSerializer
     ]
 
     for type, keys of checks
-      continue if not type in allowedTypes #ignore invalid assertion types
+      continue unless type in allowedTypes # Ignore invalid assertion types
       for key in keys
         if obj[key] isnt undefined
           return false unless typeof obj[key] is type
@@ -131,7 +156,7 @@ class MessageSerializer
 if not window?
   module.exports = exports
   exports.MessageSerializer = MessageSerializer
-  exports.NetCodes = NetCodes
+  exports.NetTypes = NetTypes
 else
   MIKE.MessageSerializer = MessageSerializer
-  MIKE.NetCodes = NetCodes
+  MIKE.NetTypes = NetTypes
