@@ -1,3 +1,6 @@
+# SAMPLE game class
+# To be replaced
+
 class MikeGame
   constructor: (@clients) ->
     @PHYSICS_DT = 2
