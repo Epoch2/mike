@@ -3,6 +3,7 @@ Emitter = require("./Emitter.js").Emitter
 ColorUtil = require("./ColorUtil.js").ColorUtil
 Snake = require("./Snake.js").Snake
 MikeClient = require("./MikeClient.js").MikeClient
+MikeGame = require("./MikeGame.js").MikeGame
 MS = require("./NetMessage.js").MessageSerializer
 TYPES = require("./NetMessage.js").NetTypes.TYPES
 
@@ -25,22 +26,32 @@ class MikeServer
   handleClientMessage: (msg, client) ->
     switch msg.type
       when TYPES.INV_RES
-        snake = new BasicSnake(new Vec2(msg.wx/2, msg.wy/2), client.color, msg.name)
-        addClient(snake) if msg.color is client.color and msg.accept
+        snake = new BasicSnake(new Vec2(msg.wx/2, msg.wy/2), client.color, msg.data.name)
+        client.snake = snake
+        addClient(client) if msg.data.color is client.color and msg.data.accept
 
       when TYPES.MOV_UPD
-        a = "empty"
+        client.snake.setMovement(msg.data.move, msg.data.left, msg.data.right)
+        broadcast {
+          type: TYPES.MOV_UPD,
+          data: {
+            id: client.id,
+            move: msg.data.move,
+            left: msg.data.left,
+            right: msg.data.right
+          }
+        }
 
   broadcast: (message) ->
     client.transmit(MS.serialize(message)) for client in @clients
 
   addClient: (client) ->
-    if client.connection?
+    if client.connection? and client.snake?
       client.id = @IDs
       @IDs++
       # Make sure client is removed upon disconnect
       # (null pointer prevention)
-      client.on "close", (code, reason) =>
+      client.on "disconnect", =>
         @delClient(client)
       @clients.push(client)
       @broadcast {
@@ -48,7 +59,8 @@ class MikeServer
         data: {
           id: client.id,
           name: client.snake.name,
-          color: client.snake.color
+          color: client.snake.color,
+          pos: client.snake.initPos
         }
       }
 
@@ -57,6 +69,10 @@ class MikeServer
 
   delClientByID: (ID) ->
     @clients.splice(i,1) for client, i in @clients when client?.ID is ID
+
+  getClient: (client) ->
+    return cli for cli in @clients when cli is client
+    return null
 
   getClientByID: (ID) ->
     return client for client in @clients when client?.ID is ID
@@ -75,3 +91,8 @@ class MikeServer
     )
 
   runGame: ->
+    game = new MikeGame(@clients)
+    game.gameLoop()
+
+mikeserver = new MikeServer()
+mikeserver.runGame()
