@@ -25,10 +25,10 @@ class ColorUtil
     # and 0 are opposites (such as #FFFFFF
     # vs #000000)
 
-    color1 = hexToRgb(color1)
-    color2 = hexToRgb(color2)
+    color1 = @hexToRgb(color1)
+    color2 = @hexToRgb(color2)
 
-    return ((441-Math.sqrt((color2.r-color1.r)^2+(color2.g-color1.g)^2+(color2.b-color1.b)^2))/441)
+    return Math.abs(((441-Math.sqrt(Math.pow((color2.r-color1.r), 2) + Math.pow((color2.g-color1.g), 2) + Math.pow((color2.b-color1.b), 2)))/441)).toFixed(2)
 
 module.exports = exports
 exports.ColorUtil = ColorUtil
