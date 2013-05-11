@@ -55,8 +55,10 @@ class MessageSerializer
       data: null
     }
 
+    # Deserialize string
     tempData = @decompress(type, msg_raw)
     try
+      # Restructurize object
       out.data = @typecast(tempData, @STRUCTURES[type])
     catch error
       # Beautiful amazing error handling goes here
