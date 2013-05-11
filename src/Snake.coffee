@@ -7,7 +7,21 @@ else
   Spring = MIKE.Spring
   Particle = MIKE.Particle
 
-class Snake
+class BasicSnake
+  # Snake skeleton for server-side usage
+  constructor: (@initPos, @color, @name) ->
+    @dir = new Vec2(-1, 0)
+    @move = false
+    @left = false
+    @right = false
+
+  setMovement: (move, left, right, dir) ->
+    @move = move
+    @left = left
+    @right = right
+    @dir = if dir? then dir else @dir
+
+class Snake extends BasicSnake
   constructor: (position, color, @name) ->
     @dir = new Vec2(-1, 0)
     @move = false
@@ -63,14 +77,6 @@ class Snake
 
     for particle in @particles
       particle.update(dt)
-
-class BasicSnake
-  # Snake skeleton for server-side usage
-  constructor: (@initPos, @color, @name) ->
-    @dir = new Vec2(-1, 0)
-    @move = false
-    @left = false
-    @right = false
 
 unless window?
   module.exports = exports
