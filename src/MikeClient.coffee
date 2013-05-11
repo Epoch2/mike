@@ -11,7 +11,7 @@ class MikeClient
       @emit "message", (msg)
 
     @connection.on "close", (code, reason) =>
-      @emit "close", code, reason
+      @emit "disconnect"
 
   sendInvite: (color) ->
     @connection.transmit MS.serialize({
@@ -23,7 +23,7 @@ class MikeClient
     # Send update of own state
 
   addSnake: (snake) ->
-    if snake instanceof Snake or snake instanceof BasicSnake
+    if snake instanceof BasicSnake or snake instanceof Snake
       @snake = snake
     else
       throw "Illegal snake of type #{typeof snake}"
