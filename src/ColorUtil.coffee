@@ -6,7 +6,7 @@ class ColorUtil
       color += letters[Math.floor(Math.random()*(letters.length-1))]
     return color
 
-  @rgbToHex = (r, g, b) ->
+  @rgbToHex: (r, g, b) ->
     return "" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
 
   @hexToRgbRegex: /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
