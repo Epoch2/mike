@@ -9,9 +9,9 @@ class ColorUtil
   @rgbToHex = (r, g, b) ->
     return "" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
 
+  @hexToRgbRegex: /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
   @hexToRgb: (hex) ->
-    out = {}
-    result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    result = @hexToRgbRegex.exec(hex)
     return {
       r: parseInt(result[1], 16),
       g: parseInt(result[2], 16),
