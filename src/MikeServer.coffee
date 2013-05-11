@@ -2,7 +2,7 @@ SocketServer = require("./SocketServer.js").SocketServer
 Emitter = require("./Emitter.js").Emitter
 ColorUtil = require("./ColorUtil").ColorUtil
 MS = require("./NetMessage").MessageSerializer
-CODES = require("./NetMessage").Codes.CODES
+TYPES = require("./NetMessage").NetTypes.TYPES
 
 class MikeClient extends Emitter
   constructor: (@connection) ->
@@ -14,7 +14,7 @@ class MikeClient extends Emitter
 
   sendInvite: (color) ->
     @connection.transmit MS.serialize({
-      type: CODES.INV,
+      type: TYPES.INV,
       color: color
     })
 
@@ -39,10 +39,10 @@ class MikeServer
 
   handleClientMessage: (msg, client) ->
     switch msg.type
-      when CODES.INV_RES
+      when TYPES.INV_RES
         addClient(client) if msg.color is client.color and msg.accept
 
-      when CODES.MOV_UPD
+      when TYPES.MOV_UPD
         a = "empty"
         # ...
 

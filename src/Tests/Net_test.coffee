@@ -1,27 +1,29 @@
 if not window?
   MS = require("../Net.js").MessageSerializer
-  CODES = require("../Net.js").NetCodes
+  TYPES = require("../Net.js").NetTypes.TYPES
+  Vec2 = require("../Vec2.js").Vec2
 else
   MS = MIKE.MessageSerializer
-  CODES = MIKE.NetCodes
+  TYPES = MIKE.NetTypes.TYPES
+  Vec2 = MIKE.Vec2
 
-messages = [
+messages_c = [
   {
-    type: CODES.INV,
+    type: TYPES.INV,
     data: {
       color: "#FFFFFF",
       gameStart: 234
     }
   },
   {
-    type: CODES.INV_RES,
+    type: TYPES.INV_RES,
     data: {
       accept: true,
       color: "#FFFFFF"
     }
   },
   {
-    type: CODES.MOV_UPD,
+    type: TYPES.MOV_UPD,
     data: {
       move: true,
       right: true,
@@ -29,13 +31,34 @@ messages = [
     }
   },
   {
-    type: CODES.POS_UPD,
+    type: TYPES.POS_UPD,
     data: {
       x: 12345,
       y: 12354,
       dx: 23444,
+      dy: 13234,
+      dir: new Vec2(5, 5)
     }
   }
-
-
 ]
+
+messages_d = [
+  "00|#FFFFFF|234",
+  "01|true|#FFFFFF",
+  "02|true|false|true",
+  "03|12345|12354|23444|13234|@>5.5.0"
+]
+
+console.log "start"
+for message in messages_c
+  console.log(message.type)
+  console.log(MS.serialize(message))
+  console.log("----------")
+
+console.log "========================="
+
+for message in messages_d
+  console.log(message)
+  console.log MS.deserialize(message)
+  console.log "----------"
+
