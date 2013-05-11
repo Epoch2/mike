@@ -9,7 +9,7 @@ class Connection extends Emitter
   # server-side WebSocket implementations
 
   constructor: (@ws) ->
-    if not window?
+    unless window?
       @ws.on "message", (message) =>
         @emit "message", message
 
