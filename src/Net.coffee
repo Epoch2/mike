@@ -142,7 +142,7 @@ class MessageSerializer
 
   @typecast: (obj, casts) ->
     # Casts all values of 'obj' to match the
-    # type specified for the key in 'casts'
+    # types specified for the keys in 'casts'
     #
     # In the example below, the properties 'x'
     # and 'y' of the object 'pos' will
