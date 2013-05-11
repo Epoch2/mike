@@ -1,4 +1,4 @@
-if not window?
+unless window?
   Vec2 = require("./Vec2.js").Vec2
 else
   Vec2 = MIKE.Vec2
@@ -10,7 +10,8 @@ class NetTypes
     INV: "00",
     INV_RES: "01",
     MOV_UPD: "02",
-    POS_UPD: "03"
+    POS_UPD: "03",
+    NEW_CLIENT: "04"
   }
 
 class MessageSerializer
@@ -22,27 +23,22 @@ class MessageSerializer
   @DELIMITER: "|"
   @OBJECT_IDENT: "@"
 
-  # Assertion methods
-  @ASSERTIONS: {}
-  @ASSERTIONS[@TYPES.INV] = (data) => return @assertKeys(data, {"string": ["color"], "number": ["gameStart"]})
-  @ASSERTIONS[@TYPES.INV_RES] = (data) => return @assertKeys(data, {"boolean": ["accept"], "string": ["color"]})
-  @ASSERTIONS[@TYPES.MOV_UPD] = (data) => return @assertKeys(data, {"boolean": ["move", "left", "right"]})
-  @ASSERTIONS[@TYPES.POS_UPD] = (data) => return @assertKeys(data, {"number": ["x", "y", "dx", "dy",], "object": ["dir"]})
+  # Message structure descriptions
+  @STRUCTURES: {}
+  @STRUCTURES[@TYPES.INV] = {"color": "string", "gameStart": "number"}
+  @STRUCTURES[@TYPES.INV_RES] = {"accept": "boolean", "color": "string", "name": "string", "wx": "number", "wy": "number"}
+  @STRUCTURES[@TYPES.MOV_UPD] = {"id": "number", "move": "boolean", "left": "boolean", "right": "boolean"}
+  @STRUCTURES[@TYPES.NEW_CLIENT] = {"id": "number", "name": "string", "color": "string", "pos": "object"}
 
   # Compression patterns
   @COMPRESSION_PATTERNS: {}
   @COMPRESSION_PATTERNS[@TYPES.INV] = ["color", "gameStart"]
   @COMPRESSION_PATTERNS[@TYPES.INV_RES] = ["accept", "color"]
-  @COMPRESSION_PATTERNS[@TYPES.MOV_UPD] = ["move", "left", "right"]
-  @COMPRESSION_PATTERNS[@TYPES.POS_UPD] = ["x", "y", "dx", "dy", "dir"]
+  @COMPRESSION_PATTERNS[@TYPES.MOV_UPD] = ["id", "move", "left", "right"]
+  @COMPRESSION_PATTERNS[@TYPES.NEW_CLIENT] = ["id", "name", "color", "pos"]
 
   # Classes with serialization methods
   @COMPRESSIBLE_CLASSES: [Vec2]
-
-  # Decompression keys
-  @OBJECT_KEYS: {
-    ">": Vec2
-  }
 
   @serialize: (msg_obj) ->
     return false unless @assertType(msg_obj.type, msg_obj.data)
@@ -59,7 +55,12 @@ class MessageSerializer
       data: null
     }
 
-    out.data = @decompress(type, msg_raw)
+    tempData = @decompress(type, msg_raw)
+    try
+      out.data = @typecast(tempData, @STRUCTURES[type])
+    catch error
+      # Beautiful amazing error handling goes here
+      console.log error
     return out
 
   @compress: (type, data) ->
@@ -93,15 +94,16 @@ class MessageSerializer
   @decompress: (type, data) ->
     out = {}
     if type of @COMPRESSION_PATTERNS
-      # Type has compression pattern
+      # Message type has compression pattern
       vals = data.split(@DELIMITER)
       i = 0
       for key in @COMPRESSION_PATTERNS[type]
         val = vals[i]
         if val[0] is @OBJECT_IDENT
+          console.log val
           # This val is an object
           # Deserialize it correctly by determining its type with the type identifier at val[1]
-          (out[key] = cla.deserialize(val); break) for id, cla of @OBJECT_KEYS when id is val[1]
+          (out[key] = cla.deserialize(val); break) for cla in @COMPRESSIBLE_CLASSES when val[1] is cla.TYPE_IDENT
         else
           out[key] = val
         i++
@@ -117,43 +119,57 @@ class MessageSerializer
     return msg_raw.substring(@TYPE_LENGTH+1)
 
   @assertType: (type, obj) ->
-    return @ASSERTIONS[type](obj)
-
-  @typeOf: (obj) ->
-    return Number(type) for type, assertion of @ASSERTIONS when assertion(obj)
+    return @assertKeys(obj, @STRUCTURES[type])
 
   @assertKeys: (obj, checks) ->
     # Asserts that an object, 'obj', contains the keys
-    # specified, and that the values of the keys are of the right type.
+    # specified in 'checks', and that their values
+    # are of the specified type.
     #
-    # In the example below the object 'pos' is asserted
-    # to contain two numbers with the keys 'x' and 'y' and
-    # a boolean with the key "isCoordinate"
+    # In the example below, the object 'pos' is
     #
-    # assert(pos, {
-    # "number": ["x"] ["y"],
-    # "boolean": ["isCoordinate"]
+    # assertKeys(pos, {
+    #   "x": "number",
+    #   "y": "number",
+    #   "isCoordinate": "boolean"
     # })
 
-    allowedTypes = [
-      "boolean",
-      "string",
-      "number",
-      "object",
-      "function"
-    ]
-
-    for type, keys of checks
-      continue unless type in allowedTypes # Ignore invalid assertion types
-      for key in keys
-        if obj[key] isnt undefined
-          return false unless typeof obj[key] is type
-        else
-          return false
-
+    for key of obj
+      return false unless typeof obj[key] is checks[key]
     return true
 
-if not window?
+  @typecast: (obj, casts) ->
+    # Casts all values of 'obj' to match the
+    # type specified for the key in 'casts'
+    #
+    # In the example below, the properties 'x'
+    # and 'y' of the object 'pos' will
+    # be casted to numbers while the
+    # property "isCoordinate" will be
+    # casted to boolean.
+    #
+    # typecast(pos, {
+    #   "x": "number",
+    #   "y": "number",
+    #   "isCoordinate": "boolean"
+    # })
+
+    # Methods to use for casting.
+    # Number() parses both ints and floats
+    # as opposed to parseInt() and parseFloat()
+    # whom only parses their own types
+    # respectively.
+    castMethods = {
+      "boolean": Boolean,
+      "string": String,
+      "number": Number
+    }
+
+    for key, val of obj
+      obj[key] = castMethods[casts[key]](val) if typeof val of castMethods
+    return obj
+
+unless window?
   module.exports = exports
   exports.MessageSerializer = MessageSerializer
   exports.NetTypes = NetTypes

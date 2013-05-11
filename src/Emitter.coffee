@@ -9,7 +9,7 @@ class Emitter
       callbacks[event] = callback
     ) if typeof event is "string" and typeof callback is "function"
 
-if not window?
+unless window?
   module.exports = exports
   exports.Emitter = Emitter
 else

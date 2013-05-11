@@ -1,3 +1,12 @@
+unless window?
+  Vec2 = require("./Vec2.js").Vec2
+  Snake = require("./Snake.js").Snake
+else
+  Vec2 = MIKE.Vec2
+  Snake = MIKE.Snake
+  Keyboard = MIKE.Keyboard
+
+
 ###
   FPS AND MS COUNTER (STATS)
 ###
@@ -43,7 +52,7 @@ niceColor = ->
   color
 
 #particle = new MIKE.Particle(new Vec2(canvas.width/2,canvas.height/2), 10, niceColor(), new Vec2(0,0))
-player = new MIKE.Snake(new MIKE.Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
+player = new Snake(new Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
 
 update = (dt) ->
   player.update(dt)
@@ -91,34 +100,34 @@ requestAnimationFrame(gameLoop)
 ###
 
 # Up key
-MIKE.Keyboard.bind("press", {
+Keyboard.bind("press", {
     key: 38,
     callback: (-> player.move = true)
 });
 
-MIKE.Keyboard.bind("release", {
+Keyboard.bind("release", {
     key: 38,
     callback: (-> player.move = false)
 })
 
 # Right key
-MIKE.Keyboard.bind("press", {
+Keyboard.bind("press", {
     key: 39,
     callback: (-> player.right = true)
 })
 
-MIKE.Keyboard.bind("release", {
+Keyboard.bind("release", {
     key: 39,
     callback: (-> player.right = false)
 })
 
 # Left key
-MIKE.Keyboard.bind("press", {
+Keyboard.bind("press", {
     key: 37,
     callback: (-> player.left = true)
 })
 
-MIKE.Keyboard.bind("release", {
+Keyboard.bind("release", {
     key: 37,
     callback: (-> player.left = false)
 })

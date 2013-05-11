@@ -1,12 +1,17 @@
+unless window?
+  Vec2 = require("./Vec2.js").Vec2
+else
+  Vec2 = MIKE.Vec2
+
 class Particle
   constructor: (pos, @radius, @color, @forces) ->
-    dencity = 0.001
-    @mass = Math.PI * @radius * @radius * dencity
+    density = 0.001
+    @mass = Math.PI * @radius * @radius * density
     @airResistance = @radius * @radius * 0.00001
 
-    @prevPos = new MIKE.Vec2(pos.x, pos.y)
-    @currPos = new MIKE.Vec2(pos.x, pos.y)
-    @vel = new MIKE.Vec2(0,0)
+    @prevPos = new Vec2(pos.x, pos.y)
+    @currPos = new Vec2(pos.x, pos.y)
+    @vel = new Vec2(0,0)
 
   applyForce: (force) ->
     @forces.add(force)
@@ -29,7 +34,7 @@ class Particle
     ctx.fillStyle = @color
     ctx.fill()
 
-if not window?
+unless window?
   module.exports = exports
   exports.Particle = Particle
 else

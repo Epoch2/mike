@@ -1,4 +1,4 @@
-if not window?
+unless window?
   Emitter = require("./Emitter.js").Emitter
 else
   Emitter = MIKE.Emitter
@@ -33,7 +33,7 @@ class Connection extends Emitter
     catch error
       return error
 
-if not window?
+unless window?
   module.exports = exports
   exports.Connection = Connection
 else

@@ -1,7 +1,7 @@
 class Vec2
-  constructor: (@x, @y, restAngle) -> @restAngle = restAngle or 0; # Allow recreation of vector with intact restAngle for serialization purposes
+  constructor: (@x, @y, @restAngle=0) -> # Allow recreation of vector with intact restAngle for serialization purposes
 
-  @TYPE_IDENT: ">"  # This identifies the serialized vector
+  @TYPE_IDENT: ">"  # This identifies the serialized object as an object of type "Vec2"
   @SERIALIZATION_REGEX: /(\d*)\.(\d*)\.(\d*)$/
   @serialize: (vec) -> "#{@TYPE_IDENT}#{vec.x}.#{vec.y}.#{vec.restAngle})"
   @deserialize: (vec) -> res = vec.match(@SERIALIZATION_REGEX); new Vec2(Number(res[1]), Number(res[2]), Number(res[3]))
@@ -9,12 +9,12 @@ class Vec2
   @vecClosestToDir: (dir, vecs) ->
     closest = vecs[0]
     (closest = vec if dir.dot(vec.unit()) > dir.dot(closest.unit())) for vec in vecs
-    closest
+    return closest
 
   @vecFurthestFromDir: (dir, vecs) ->
     closest = vecs[0]
     (closest = vec if dir.dot(vec.unit()) < dir.dot(closest.unit())) for vec in vecs
-    closest
+    return closest
 
   @angLessThan: (angle, vec1, vec2) -> vec1.unit().dot(vec2.unit()) < Math.cos(angle)
 
@@ -81,7 +81,7 @@ class Vec2
     @y = len * Math.sin(angle)
     @restAngle = 0
 
-if not window?
+unless window?
   module.exports = exports
   exports.Vec2 = Vec2
 else

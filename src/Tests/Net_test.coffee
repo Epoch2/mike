@@ -58,7 +58,15 @@ for message in messages_c
 console.log "========================="
 
 for message in messages_d
-  console.log(message)
-  console.log MS.deserialize(message)
+  console.log message
+  des = MS.deserialize(message)
+  console.log des
+  for key, val of des
+    if typeof val is "object"
+      for k, v of val
+        console.log typeof v
+    else
+      console.log val
   console.log "----------"
+
 
