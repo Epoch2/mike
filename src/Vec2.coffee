@@ -1,9 +1,10 @@
 class Vec2
   constructor: (@x, @y, restAngle) -> @restAngle = restAngle or 0; # Allow recreation of vector with intact restAngle for serialization purposes
 
-  @SERIALIZATION_REGEX = /^#(\d*)\.(\d*)\.(\d*)$/
-  @serialize: (vec) -> "(#{vec.x}.#{vec.y}.#{vec.restAngle})"
-  @deserialize: (vec) -> res = vec.match(@SERIALIZATION_REGEX); new Vec2(res[0], res[1], res[2])
+  @TYPE_IDENT: ">"  # This identifies the serialized vector
+  @SERIALIZATION_REGEX: /(\d*)\.(\d*)\.(\d*)$/
+  @serialize: (vec) -> "#{@TYPE_IDENT}#{vec.x}.#{vec.y}.#{vec.restAngle})"
+  @deserialize: (vec) -> res = vec.match(@SERIALIZATION_REGEX); new Vec2(Number(res[1]), Number(res[2]), Number(res[3]))
 
   @vecClosestToDir: (dir, vecs) ->
     closest = vecs[0]
