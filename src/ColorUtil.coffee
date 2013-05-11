@@ -28,6 +28,8 @@ class ColorUtil
     color1 = @hexToRgb(color1)
     color2 = @hexToRgb(color2)
 
+    # The difference between colors is the distance
+    # between them in an imaginary 3D-space.
     return Math.abs(((441-Math.sqrt(Math.pow((color2.r-color1.r), 2) + Math.pow((color2.g-color1.g), 2) + Math.pow((color2.b-color1.b), 2)))/441)).toFixed(2)
 
 module.exports = exports
