@@ -22,18 +22,27 @@ class MikeServer
 
       genColor (color) =>
         client.color = color
-        client.sendInvite(color)
+        client.connection.transmit({
+            type: TYPES.INV,
+            data: {
+              color: color
+            }
+          })
 
   handleClientMessage: (msg, client) ->
     switch msg.type
       when TYPES.INV_RES
-        snake = new BasicSnake(new Vec2(msg.wx/2, msg.wy/2), client.color, msg.data.name)
+        x = Math.random()*200
+        y = Math.random()*200
+        snake = new ControllableSnake(new Vec2(x, y), client.color, msg.data.name)
         client.snake = snake
         addClient(client) if msg.data.color is client.color and msg.data.accept
 
       when TYPES.MOV_UPD
-        return false unless getClient(client)?
-        client.snake.setMovement(msg.data.move, msg.data.left, msg.data.right)
+        return false unless getClient(client)? # Don't update nonexistent clients
+        client.snake.move = msg.data.move
+        client.snake.left = msg.data.left
+        client.snake.right = msg.data.right
 
   broadcast: (message) ->
     client.transmit(MS.serialize(message)) for client in @clients
