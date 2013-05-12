@@ -28,5 +28,28 @@ class MikeGame
           @accumulator -= PHYSICS_DT
 
     else
-      @gameLoop = =>
-        # Client gameLoop
+      @gameLoop = (fpsStats, msStats) =>
+        fpsStats.begin() if fpsStats?
+        msStats.begin() if msStats?
+
+        newTime = performance.now()
+        frameTime = Math.min(newTime - currentTime, MAX_RENDER_DT)
+        currentTime = newTime
+
+        # Add to the time that needs to be simulated
+        accumulator += frameTime
+
+        # Update physics in PYSICS_DT chunks
+        while accumulator >= PHYSICS_DT
+          update(PHYSICS_DT)
+          t += PHYSICS_DT
+          accumulator -= PHYSICS_DT
+
+        # Render with blending
+        blending = accumulator / PHYSICS_DT
+        render(blending)
+
+        fpsStats.end() if fpsStats?
+        msStats.end() if msStats?
+
+        requestAnimationFrame(gameLoop)

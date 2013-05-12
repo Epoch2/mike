@@ -9,28 +9,12 @@ else
 
 class BasicSnake
   # Snake skeleton for server-side usage
-  constructor: (@initPos, @color, @name) ->
+  constructor: (position, @color, @name) ->
+    @anim = 0
     @dir = new Vec2(-1, 0)
-    @move = false
-    @left = false
-    @right = false
-
-  setMovement: (move, left, right, dir) ->
-    @move = move
-    @left = left
-    @right = right
-    @dir = if dir? then dir else @dir
-
-class Snake extends BasicSnake
-  constructor: (position, color, @name) ->
-    @dir = new Vec2(-1, 0)
-    @move = false
-    @left = false
-    @right = false
-
-    @iterations = 0
 
     # Options
+    @speed = 0.005
     num = 10
     radius = 8
     springConst = 0.0004
@@ -55,8 +39,17 @@ class Snake extends BasicSnake
 
   getPos: ->
     @particles[0].currPos.copy()
+  getVel: ->
+    @particles[0].vel.copy()
+  getDir: ->
+    @dir.copy()
   getRad: ->
     @particles[0].radius
+
+  correctionUpdate: (pos, vel, dir) ->
+    @currPos = pos
+    @vel = vel
+    @dir = dir
 
   render: (blending) ->
     for i in [@particles.length-1.. 0]
@@ -67,6 +60,23 @@ class Snake extends BasicSnake
     pos = @particles[0].currPos.plus(new Vec2(@name.split("").length * -3, -20))
     ctx.fillText(@name, pos.x, pos.y)
 
+class OtherSnake extends BasicSnake ->
+  update: (dt) ->
+    for spring in @springs
+      spring.solve()
+      
+      @particles[0].vel.add(@dir.times_s(@speed))
+
+    for particle in @particles
+      particle.update(dt)
+
+class PlayerSnake extends BasicSnake
+  constructor: (position, color, name) ->
+    super(position, color, name)
+    @move = false
+    @left = false
+    @right = false
+
   update: (dt) ->
     for spring in @springs
       spring.solve()
@@ -75,7 +85,7 @@ class Snake extends BasicSnake
       @dir.rotate(MIKE.Maths.toRadians(-0.5)) if @right
       @dir.rotate(MIKE.Maths.toRadians(0.5)) if @left
       @dir.rotate(MIKE.Maths.toRadians(Math.sin(@iterations+=0.04)))
-      @particles[0].vel.add(@dir.times_s(0.005))
+      @particles[0].vel.add(@dir.times_s(@speed))
     else
       @dir = @particles[0].currPos.minus(@particles[2].currPos).unit()
 
@@ -84,8 +94,10 @@ class Snake extends BasicSnake
 
 unless window?
   module.exports = exports
-  exports.Snake = Snake
   exports.BasicSnake = BasicSnake
+  exports.OtherSnake = OtherSnake
+  exports.PlayerSnake = PlayerSnake
 else
-  MIKE.Snake = Snake
   MIKE.BasicSnake = BasicSnake
+  MIKE.OtherSnake = OtherSnake
+  MIKE.PlayerSnake = PlayerSnake

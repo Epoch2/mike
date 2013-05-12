@@ -1,9 +1,9 @@
 unless window?
   Vec2 = require("./Vec2.js").Vec2
-  Snake = require("./Snake.js").Snake
+  PlayerSnake = require("./Snake.js").PlayerSnake
 else
   Vec2 = MIKE.Vec2
-  Snake = MIKE.Snake
+  PlayerSnake = MIKE.PlayerSnake
   Keyboard = MIKE.Keyboard
 
 
@@ -52,7 +52,7 @@ niceColor = ->
   color
 
 #particle = new MIKE.Particle(new Vec2(canvas.width/2,canvas.height/2), 10, niceColor(), new Vec2(0,0))
-player = new Snake(new Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
+player = new PlayerSnake(new Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
 
 update = (dt) ->
   player.update(dt)
@@ -68,31 +68,9 @@ window.t = 0;
 currentTime = performance.now()
 accumulator = 0
 
-gameLoop = ->
-  fpsStats.begin()
-  msStats.begin()
+mikeGame = new MikeGame()
 
-  newTime = performance.now()
-  frameTime = Math.min(newTime - currentTime, MAX_RENDER_DT)
-  currentTime = newTime
-
-  # Add to the time that needs to be simulated
-  accumulator += frameTime
-
-  # Update physics in PYSICS_DT chunks
-  while accumulator >= PHYSICS_DT
-    update(PHYSICS_DT)
-    t += PHYSICS_DT
-    accumulator -= PHYSICS_DT
-
-  # Render with blending
-  blending = accumulator / PHYSICS_DT
-  render(blending)
-
-  fpsStats.end()
-  msStats.end()
-
-  requestAnimationFrame(gameLoop)
+gameLoop = -> mikeGame.gameLoop(fpsStats, msStats)
 requestAnimationFrame(gameLoop)
 
 ###
