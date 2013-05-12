@@ -7,11 +7,12 @@ class NetTypes
   # Static
   @TYPE_LENGTH: 2
   @TYPES: {
-    INV: "00",
-    INV_RES: "01",
-    MOV_UPD: "02",
-    POS_UPD: "03",
-    NEW_CLIENT: "04"
+    PING: "00",
+    INV: "01"
+    INV_RES: "02",
+    MOV_UPD: "03",
+    POS_UPD: "04",
+    NEW_CLIENT: "05"
   }
 
 class MessageSerializer
@@ -27,14 +28,16 @@ class MessageSerializer
   @STRUCTURES: {}
   @STRUCTURES[@TYPES.INV] = {"color": "string", "gameStart": "number"}
   @STRUCTURES[@TYPES.INV_RES] = {"accept": "boolean", "color": "string", "name": "string"}
-  @STRUCTURES[@TYPES.MOV_UPD] = {"id": "number", "move": "boolean", "left": "boolean", "right": "boolean"}
+  @STRUCTURES[@TYPES.MOV_UPD] = {"move": "boolean", "left": "boolean", "right": "boolean"}
+  @STRUCTURES[@TYPES.POS_UPD] = {"id": "number", "pos": "object", "vel": "object", "dir": "object"}
   @STRUCTURES[@TYPES.NEW_CLIENT] = {"id": "number", "name": "string", "color": "string", "pos": "object"}
 
   # Compression patterns
   @COMPRESSION_PATTERNS: {}
   @COMPRESSION_PATTERNS[@TYPES.INV] = ["color", "gameStart"]
-  @COMPRESSION_PATTERNS[@TYPES.INV_RES] = ["accept", "color"]
-  @COMPRESSION_PATTERNS[@TYPES.MOV_UPD] = ["id", "move", "left", "right"]
+  @COMPRESSION_PATTERNS[@TYPES.INV_RES] = ["accept", "color", "name"]
+  @COMPRESSION_PATTERNS[@TYPES.MOV_UPD] = ["move", "left", "right"]
+  @COMPRESSION_PATTERNS[@TYPES.POS_UPD] = ["id", "pos", "vel", "dir"]
   @COMPRESSION_PATTERNS[@TYPES.NEW_CLIENT] = ["id", "name", "color", "pos"]
 
   # Classes with serialization methods

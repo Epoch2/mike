@@ -21,7 +21,7 @@ class Connection extends Emitter
         @emit "message", message.data
 
       @ws.onopen = =>
-        @emit "open"
+        @emit "ready"
 
       @ws.onclose = (evt) =>
         @emit "close", evt.code, evt.reason
