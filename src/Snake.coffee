@@ -59,7 +59,6 @@ class Snake extends BasicSnake
 
     ctx.font = "15px Arial"
     ctx.fillStyle = "#fff"
-    ctx.opa
     pos = @particles[0].currPos.plus(new Vec2(@name.split("").length * -3, -20))
     ctx.fillText(@name, pos.x, pos.y)
 
