@@ -12,7 +12,7 @@ class MikeGame
     @t = 0
 
   gameLoop: ->
-    @newTime = @time
+    @newTime = @time()
     frameTime = Math.min(newTime - @currentTime, @MAX_RENDER_DT)
     @currentTime = @newTime
 
