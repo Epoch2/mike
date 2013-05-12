@@ -7,20 +7,12 @@ else
 
 class MikeClient
   constructor: (@connection) ->
-    @connection.on "message", (msg) =>
-      @emit "message", (msg)
+    if connection?
+      @connection.on "message", (msg) =>
+        @emit "message", (msg)
 
-    @connection.on "close", (code, reason) =>
-      @emit "disconnect"
-
-  sendInvite: (color) ->
-    @connection.transmit MS.serialize({
-      type: TYPES.INV,
-      color: color
-    })
-
-  sendUpdate: (state) ->
-    # Send update of own state
+      @connection.on "close", (code, reason) =>
+        @emit "disconnect"
 
   addSnake: (snake) ->
     if snake instanceof BasicSnake or snake instanceof Snake
