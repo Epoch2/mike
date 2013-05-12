@@ -60,7 +60,7 @@ class BasicSnake
     pos = @particles[0].currPos.plus(new Vec2(@name.split("").length * -3, -20))
     ctx.fillText(@name, pos.x, pos.y)
 
-class OtherSnake extends BasicSnake ->
+class OtherSnake extends BasicSnake
   update: (dt) ->
     for spring in @springs
       spring.solve()
