@@ -12,6 +12,7 @@ class MikeServer
     @connectionserver = new ConnectionServer(config)
     @clients = []
     @activeColors = []
+    @NET_UPDATE_FREQ = 1000/60
 
     @connectionserver.on "new", (connection) =>
       client = new MikeClient(connection)
@@ -33,15 +34,6 @@ class MikeServer
       when TYPES.MOV_UPD
         return false unless getClient(client)?
         client.snake.setMovement(msg.data.move, msg.data.left, msg.data.right)
-        broadcast {
-          type: TYPES.MOV_UPD,
-          data: {
-            id: client.id,
-            move: msg.data.move,
-            left: msg.data.left,
-            right: msg.data.right
-          }
-        }
 
   broadcast: (message) ->
     client.transmit(MS.serialize(message)) for client in @clients
@@ -91,9 +83,22 @@ class MikeServer
       callback(newColor)
     )
 
+  broadcastLoop: ->
+    for client in @clients
+      broadcast {
+        type: TYPES.POS_UPD,
+        data: {
+          id: client.id,
+          pos: client.snake.getPos(),
+          vel: client.snake.getVel(),
+          dir: client.snake.getDir()
+        }
+      }
+    this()
+
   runGame: ->
     game = new MikeGame(@clients)
     game.gameLoop()
 
-mikeserver = new MikeServer()
-mikeserver.runGame()
+mikeserver = new MikeServer(@clients)
+mikeserver.gameLoop()
