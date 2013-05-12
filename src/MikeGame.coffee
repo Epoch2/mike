@@ -11,22 +11,22 @@ class MikeGame
     @accumulator = 0
     @t = 0
 
-  serverLoop: ->
-    @newTime = @time()
-    frameTime = Math.min(newTime - @currentTime, @MAX_RENDER_DT)
-    @currentTime = @newTime
+    unless window?
+      throw "Server-side MikeGame constructor needs client array!" unless @clients?
+      @gameLoop = =>
+        @newTime = @time()
+        frameTime = Math.min(newTime - @currentTime, @MAX_RENDER_DT)
+        @currentTime = @newTime
 
-    # Add to the time that needs to be simulated
-    @accumulator += frameTime
+        # Add to the time that needs to be simulated
+        @accumulator += frameTime
 
-    # Update physics in PYSICS_DT chunks
-    while @accumulator >= @PHYSICS_DT
-      client.snake.update(@PHYSICS_DT) for client in @clients
-      @t += PHYSICS_DT
-      @accumulator -= PHYSICS_DT
+        # Update physics in PYSICS_DT chunks
+        while @accumulator >= @PHYSICS_DT
+          client.snake.update(@PHYSICS_DT) for client in @clients
+          @t += PHYSICS_DT
+          @accumulator -= PHYSICS_DT
 
-
-    setTimeout(gameLoop, 1000/60)
-
-  clientLoop: ->
-    # Erik
+    else
+      @gameLoop = =>
+        # Client gameLoop
