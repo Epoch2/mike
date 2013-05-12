@@ -26,7 +26,7 @@ class MessageSerializer
   # Message structure descriptions
   @STRUCTURES: {}
   @STRUCTURES[@TYPES.INV] = {"color": "string", "gameStart": "number"}
-  @STRUCTURES[@TYPES.INV_RES] = {"accept": "boolean", "color": "string", "name": "string", "wx": "number", "wy": "number"}
+  @STRUCTURES[@TYPES.INV_RES] = {"accept": "boolean", "color": "string", "name": "string"}
   @STRUCTURES[@TYPES.MOV_UPD] = {"id": "number", "move": "boolean", "left": "boolean", "right": "boolean"}
   @STRUCTURES[@TYPES.NEW_CLIENT] = {"id": "number", "name": "string", "color": "string", "pos": "object"}
 
