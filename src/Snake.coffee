@@ -53,6 +53,11 @@ class Snake extends BasicSnake
     for i in [0.. num-2]
       @springs.push(new Spring(@particles[i], @particles[i+1], springConst, springLen, springFriction))
 
+  getPos: ->
+    @particles[0].currPos.copy()
+  getRad: ->
+    @particles[0].radius
+
   render: (blending) ->
     for i in [@particles.length-1.. 0]
       @particles[i].render(blending)
@@ -66,13 +71,13 @@ class Snake extends BasicSnake
     for spring in @springs
       spring.solve()
 
-    if not @move
+    if @move
+      @dir.rotate(MIKE.Maths.toRadians(-0.5)) if @right
+      @dir.rotate(MIKE.Maths.toRadians(0.5)) if @left
+      @dir.rotate(MIKE.Maths.toRadians(Math.sin(@iterations+=0.04)))
+      @particles[0].vel.add(@dir.times_s(0.005))
+    else
       @dir = @particles[0].currPos.minus(@particles[2].currPos).unit()
-
-    @dir.rotate(MIKE.Maths.toRadians(-0.5)) if @right and @move
-    @dir.rotate(MIKE.Maths.toRadians(0.5)) if @left and @move
-    @dir.rotate(MIKE.Maths.toRadians(Math.sin(@iterations+=0.04))) if @move
-    @particles[0].vel.add(@dir.times_s(0.005)) if @move
 
     for particle in @particles
       particle.update(dt)
