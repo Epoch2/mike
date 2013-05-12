@@ -82,8 +82,8 @@ class MikeServer
   getClientCount: ->
     return @clients.length
 
-  genColor: (callback)->
-    process.nextTick(->
+  genColor: (callback) ->
+    process.nextTick(=>
       comparison = 1
       while comparison >= 0.8
         newColor = ColorUtil.niceColor()
