@@ -70,7 +70,7 @@ class OtherSnake extends BasicSnake
     for particle in @particles
       particle.update(dt)
 
-class PlayerSnake extends BasicSnake
+class ControllableSnake extends BasicSnake
   constructor: (position, color, name) ->
     super(position, color, name)
     @move = false
@@ -96,8 +96,8 @@ unless window?
   module.exports = exports
   exports.BasicSnake = BasicSnake
   exports.OtherSnake = OtherSnake
-  exports.PlayerSnake = PlayerSnake
+  exports.ControllableSnake = ControllableSnake
 else
   MIKE.BasicSnake = BasicSnake
   MIKE.OtherSnake = OtherSnake
-  MIKE.PlayerSnake = PlayerSnake
+  MIKE.ControllableSnake = ControllableSnake

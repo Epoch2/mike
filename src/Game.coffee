@@ -1,9 +1,9 @@
 unless window?
   Vec2 = require("./Vec2.js").Vec2
-  PlayerSnake = require("./Snake.js").PlayerSnake
+  ControllableSnake = require("./Snake.js").ControllableSnake
 else
   Vec2 = MIKE.Vec2
-  PlayerSnake = MIKE.PlayerSnake
+  ControllableSnake = MIKE.ControllableSnake
   Keyboard = MIKE.Keyboard
 
 
@@ -52,7 +52,7 @@ niceColor = ->
   color
 
 #particle = new MIKE.Particle(new Vec2(canvas.width/2,canvas.height/2), 10, niceColor(), new Vec2(0,0))
-player = new PlayerSnake(new Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
+player = new ControllableSnake(new Vec2(canvas.width/2,canvas.height/2), niceColor(), "Mike")
 
 update = (dt) ->
   player.update(dt)
