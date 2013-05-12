@@ -11,7 +11,7 @@ class MikeGame
     @accumulator = 0
     @t = 0
 
-  gameLoop: ->
+  serverLoop: ->
     @newTime = @time()
     frameTime = Math.min(newTime - @currentTime, @MAX_RENDER_DT)
     @currentTime = @newTime
@@ -25,7 +25,8 @@ class MikeGame
       @t += PHYSICS_DT
       @accumulator -= PHYSICS_DT
 
-    unless window?
-      setTimeout(gameLoop, 1000/60)
-    else
-      requestAnimationFrame(gameLoop)
+
+    setTimeout(gameLoop, 1000/60)
+
+  clientLoop: ->
+    # Erik
