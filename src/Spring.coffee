@@ -11,12 +11,12 @@ class Spring
     len = springVec.length()
     force = new Vec2(0,0)
     # Contraction force
-    force.add(springVec.unit().times_s(len - @springLen).times_s(@springConst)) if len != 0
+    force.add(springVec.unit().times_s(len - @springLen).times_s(@springConst)) if len isnt 0
     # Friction force
     force.add(@particle1.vel.minus(@particle2.vel).times_s(-@frictionConst))
 
     # Apply equal and oposite forces
-    @particle1.applyForce(force) if @particle1.head != true
+    @particle1.applyForce(force) if @particle1.head isnt true
     @particle2.applyForce(force.times_s(-1))
 
 unless window?
