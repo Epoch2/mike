@@ -64,7 +64,7 @@ class OtherSnake extends BasicSnake
   update: (dt) ->
     for spring in @springs
       spring.solve()
-      
+
       @particles[0].vel.add(@dir.times_s(@speed))
 
     for particle in @particles

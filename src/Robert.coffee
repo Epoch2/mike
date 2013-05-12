@@ -24,8 +24,6 @@ class Robert extends Emitter
       when TYPES.POS_UPD
         @emit "pos_upd", msg.data
 
-      when TYPES.
-
   acceptInvite = (name) =>
     @connection.transmit MS.serialize({
       type: TYPES.INV_RES,
