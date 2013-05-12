@@ -1,5 +1,7 @@
 Emitter = MIKE.Emitter
 Connection = MIKE.Connection
+MikeClient = MIKE.MikeClient
+Snake = MIKE.Snake
 MS = MIKE.MessageSerializer
 TYPES = MIKE.NetTypes.TYPES
 
@@ -23,6 +25,12 @@ class Robert extends Emitter
 
       when TYPES.POS_UPD
         @emit "pos_upd", msg.data
+
+      when TYPES.NEW_CLIENT
+        newClient = new MikeClient()
+        newClient.id = msg.data.id
+        newClient.addSnake(new OtherSnake(msg.data.pos, msg.data.color, msg.data.name))
+        @emit "new_client", newClient
 
   acceptInvite = (name) =>
     @connection.transmit MS.serialize({
