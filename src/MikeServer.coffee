@@ -1,4 +1,4 @@
-SocketServer = require("./SocketServer.js").SocketServer
+ConnectionServer = require("./ConnectionServer.js").ConnectionServer
 Emitter = require("./Emitter.js").Emitter
 ColorUtil = require("./ColorUtil.js").ColorUtil
 Snake = require("./Snake.js").Snake
@@ -9,11 +9,11 @@ TYPES = require("./NetMessage.js").NetTypes.TYPES
 
 class MikeServer
   constructor: (config) ->
-    @socketserver = new ConnectionServer(config)
+    @connectionserver = new ConnectionServer(config)
     @clients = []
     @activeColors = []
 
-    @socketserver.on "new", (connection) =>
+    @connectionserver.on "new", (connection) =>
       client = new MikeClient(connection)
 
       client.on "message", (msg) =>
@@ -31,6 +31,7 @@ class MikeServer
         addClient(client) if msg.data.color is client.color and msg.data.accept
 
       when TYPES.MOV_UPD
+        return false unless getClient(client)?
         client.snake.setMovement(msg.data.move, msg.data.left, msg.data.right)
         broadcast {
           type: TYPES.MOV_UPD,
