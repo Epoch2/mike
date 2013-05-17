@@ -3,7 +3,7 @@ class ColorUtil
   randHex = (letters) ->
     letters = letters.split("")
     color = "#"
-    for i in [0.. 5]
+    for i in [0..5]
       color += letters[Math.floor(Math.random()*(letters.length-1))]
     return color
 
