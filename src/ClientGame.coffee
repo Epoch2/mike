@@ -27,11 +27,13 @@ class ClientGame extends Game
 
     @currentTime = performance.now()
     @snakes = new Array()
-    @server = new Robert("ws://mike.com")
+    @server = new Robert("ws://127.0.0.1:1337")
+    console.log @server
 
     @server.on("invite", (@gameStart, color, acceptInvite) =>
+      console.log "invite"
       name = "Mike"
-      
+
       player = new ControllableSnake(new Vec2(300,300), color, name)
 
       Keyboard.bind "press", { key: 38, callback: (-> player.move = true) }
@@ -52,7 +54,7 @@ class ClientGame extends Game
 
   update: (dt) ->
     snake.update dt for snake in @snakes
-    
+
   render: (blending) ->
     @ctx.clearRect 0, 0, canvas.width, canvas.height
     snake.render @ctx, blending for snake in @snakes

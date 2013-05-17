@@ -5,6 +5,7 @@ class Emitter
       callback.apply(this, args) for evt, callback of callbacks when evt is event and typeof callback is "function"
 
   on: (event, callback) ->
+    console.log "Bound event '#{event}'"
     do(=>
       callbacks[event] = callback
     ) if typeof event is "string" and typeof callback is "function"

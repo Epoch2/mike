@@ -12,9 +12,12 @@ class Robert extends Emitter
     @assignedColor = ""
 
     @connection.on "ready", =>
+      console.log "Robert ready"
       @ready = true
 
     @connection.on "message", (message) => # When is message used?
+      console.log "Robert message"
+      console.log message
       @handleMessage(MS) if @ready
 
   handleMessage: (msg) ->
@@ -33,13 +36,14 @@ class Robert extends Emitter
         @emit "new_client", newClient
 
   acceptInvite = (name) =>
-    @connection.transmit MS.serialize({
-      type: TYPES.INV_RES,
-      data: {
-        accept: true,
-        color: @assignedColor,
-        name: name
-      }
-    })
+    if name?
+      @connection.transmit MS.serialize({
+        type: TYPES.INV_RES,
+        data: {
+          accept: true,
+          color: @assignedColor,
+          name: name
+        }
+      })
 
 MIKE.Robert = Robert

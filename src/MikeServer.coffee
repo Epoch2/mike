@@ -15,12 +15,16 @@ class MikeServer
     @NET_UPDATE_FREQ = 1000/60
 
     @connectionserver.on "new", (connection) =>
+      console.log "MS new connection"
       client = new MikeClient(connection)
 
       client.on "message", (msg) =>
+        console.log "client message"
         @handleClientMessage(msg, client)
+      console.log "add msg callback"
 
-      genColor (color) =>
+      @genColor (color) =>
+        console.log "gencolor callback"
         client.color = color
         client.connection.transmit({
             type: TYPES.INV,
@@ -48,6 +52,7 @@ class MikeServer
     client.transmit(MS.serialize(message)) for client in @clients
 
   addClient: (client) ->
+    console.log "inside addClient"
     if client.connection? and client.snake?
       client.id = @IDs
       @IDs++
@@ -83,7 +88,8 @@ class MikeServer
   getClientCount: ->
     return @clients.length
 
-  genColor: (callback) ->
+  genColora: (callback) ->
+    console.log "generating color"
     process.nextTick(=>
       comparison = 1
       while comparison >= 0.8
@@ -91,6 +97,10 @@ class MikeServer
         comparison = Math.max(comparison, ColorUtil.compareColors(newColor, color)) for color in @activeColors
       callback(newColor)
     )
+
+  genColor: (callback) ->
+    console.log "inside gencolor"
+    callback("#fffddd")
 
   broadcastLoop: ->
     for client in @clients

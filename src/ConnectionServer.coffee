@@ -12,6 +12,7 @@ class ConnectionServer extends Emitter
     @wss = new WebSocketServer({server: server})
 
     @wss.on "connection", (ws) =>
+      console.log "CS connection"
       client = new Connection(ws)
       @emit "new", client
 
