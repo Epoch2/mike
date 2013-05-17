@@ -17,7 +17,7 @@ class MikeClient
         @emit "disconnect"
 
   addSnake: (snake) ->
-    if snake instanceof BasicSnake or snake instanceof OtherSnake or snake instanceof ControllableSnake
+    if snake instanceof OtherSnake or snake instanceof ControllableSnake
       @snake = snake
     else
       throw "Illegal snake of type #{typeof snake}"
