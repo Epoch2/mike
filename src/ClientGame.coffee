@@ -41,13 +41,13 @@ class ClientGame extends Game
       Keyboard.bind "press", { key: 37, callback: (-> player.left = true) }
       Keyboard.bind "release", { key: 37, callback: (-> player.left = false) }
 
-      snakes.push player
+      @snakes.push player
 
       acceptInvite name
     )
 
     @server.on("new_clients", (client) =>
-      snakes.push client
+      @snakes.push client
     )
 
   update: (dt) ->
