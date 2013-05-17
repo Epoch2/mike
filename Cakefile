@@ -1,4 +1,5 @@
 {spawn, exec} = require "child_process"
+os = require("os")
 
 launch = (cmd, options=[]) ->
   app = spawn cmd, options
@@ -7,4 +8,10 @@ launch = (cmd, options=[]) ->
   # app.on 'exit', (status) -> callback?() if status is 0
 
 task 'build', 'Build src/ to build/.', ->
-  launch "coffee.cmd", ["-c", "-o", "build/", "src/"]
+  platform = os.platform()
+  switch platform
+    when "win32"
+      launch "coffee.cmd", ["-c", "-o", "build/", "src/"]
+
+    when "darwin"
+      launch "coffee", ["-c", "-o", "build/", "src/"]
