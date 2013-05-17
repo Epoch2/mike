@@ -2,7 +2,7 @@ class Game
 	constructor: ->
 		@PHYSICS_DT = 2
 		@MAX_RENDER_DT = 1000/30
-		@currentTime = null
+		@currentTime = null # Set this in child constructor
 		@accumulator = 0
 		@t = 0
 		
