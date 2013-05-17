@@ -51,11 +51,11 @@ class ClientGame extends Game
     )
 
   update: (dt) ->
-    snake.update dt for snake in snakes
+    snake.update dt for snake in @snakes
     
   render: (blending) ->
     @ctx.clearRect 0, 0, canvas.width, canvas.height
-    snake.render @ctx, blending for snake in snakes
+    snake.render @ctx, blending for snake in @snakes
 
   gameLoop: ->
     @fpsStats.begin() if @fpsStats?
