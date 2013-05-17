@@ -11,16 +11,13 @@ else
 
 class MikeClient extends Emitter
   constructor: (@connection) ->
+    console.log @connection
     if @connection?
-      console.log "hasConnection"
       @connection.on "message", (msg) =>
-        console.log "MikeClient message #{msg}"
         @emit "message", msg
 
       @connection.on "close", (code, reason) => # When is code and reason used?
         @emit "disconnect"
-
-      console.log "constructor done"
 
   addSnake: (snake) ->
     if snake instanceof OtherSnake or snake instanceof ControllableSnake

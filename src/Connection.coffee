@@ -11,7 +11,6 @@ class Connection extends Emitter
   constructor: (@ws) ->
     unless window?
       @ws.on "message", (message) =>
-        console.log "conn server msg"
         @emit "message", message
 
       @ws.on "close", (code, reason) =>
@@ -19,8 +18,6 @@ class Connection extends Emitter
 
     else
       @ws.onmessage = (message) =>
-        console.log "conn client msg"
-        console.log message.data
         @emit "message", message.data
 
       @ws.onopen = =>

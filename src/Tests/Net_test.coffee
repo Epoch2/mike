@@ -19,7 +19,8 @@ messages_c = [
     type: TYPES.INV_RES,
     data: {
       accept: true,
-      color: "#FFFFFF"
+      color: "#FFFFFF",
+      name: "Mike"
     }
   },
   {
@@ -33,20 +34,29 @@ messages_c = [
   {
     type: TYPES.POS_UPD,
     data: {
-      x: 12345,
-      y: 12354,
-      dx: 23444,
-      dy: 13234,
-      dir: new Vec2(5, 5)
+      id: 234234,
+      pos: new Vec2(2, 5),
+      vel: new Vec2(5, 1),
+      dir: new Vec2(2, 3)
+    }
+  }
+  {
+    type: TYPES.NEW_CLIENT,
+    data: {
+      id: 23847,
+      name: "Kent",
+      color: "#fff000",
+      pos: new Vec2(3, 9)
     }
   }
 ]
 
 messages_d = [
-  "00|#FFFFFF|234",
-  "01|true|#FFFFFF",
-  "02|true|false|true",
-  "03|12345|12354|23444|13234|@>5.5.0"
+  "01|#ffddaa|234",
+  "02|true|#FFFFFF|Mike",
+  "03|true|false|true",
+  "04|12345|@>4.3.0|@>2.3.0|@>5.5.0"
+  "05|12345|Kent|#fff000|@>8.2.0"
 ]
 
 console.log "start"

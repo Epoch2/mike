@@ -15,31 +15,29 @@ class MikeServer
     @NET_UPDATE_FREQ = 1000/60
 
     @connectionserver.on "new", (connection) =>
-      console.log "MS new connection"
       client = new MikeClient(connection)
 
       client.on "message", (msg) =>
-        console.log "client message"
-        @handleClientMessage(msg, client)
-      console.log "add msg callback"
+        @handleClientMessage(MS.deserialize(msg), client)
 
       @genColor (color) =>
-        console.log "gencolor callback"
         client.color = color
-        client.connection.transmit({
+        client.connection.transmit(MS.serialize({
             type: TYPES.INV,
             data: {
-              color: color
+              color: color,
+              gameStart: 23049
             }
-          })
+          }))
 
   handleClientMessage: (msg, client) ->
     switch msg.type
       when TYPES.INV_RES
+        console.log "INV_RES"
         x = Math.random()*200
         y = Math.random()*200
         snake = new ControllableSnake(new Vec2(x, y), client.color, msg.data.name)
-        client.snake = snake
+        client.addSnake snake
         addClient(client) if msg.data.color is client.color and msg.data.accept
 
       when TYPES.MOV_UPD
@@ -52,7 +50,6 @@ class MikeServer
     client.transmit(MS.serialize(message)) for client in @clients
 
   addClient: (client) ->
-    console.log "inside addClient"
     if client.connection? and client.snake?
       client.id = @IDs
       @IDs++
@@ -89,7 +86,6 @@ class MikeServer
     return @clients.length
 
   genColora: (callback) ->
-    console.log "generating color"
     process.nextTick(=>
       comparison = 1
       while comparison >= 0.8
@@ -99,7 +95,6 @@ class MikeServer
     )
 
   genColor: (callback) ->
-    console.log "inside gencolor"
     callback("#fffddd")
 
   broadcastLoop: ->

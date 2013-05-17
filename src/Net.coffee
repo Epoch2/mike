@@ -50,7 +50,7 @@ class MessageSerializer
     return out
 
   @deserialize: (msg_raw) ->
-    return false unless msg_raw.length >= @TYPE_LENGTH
+    throw "INVALID MESSAGE" unless msg_raw.length >= @TYPE_LENGTH
     type = @pullTypeFrom(msg_raw)
     msg_raw = @removeTypeFrom(msg_raw)
     out = {
@@ -113,7 +113,10 @@ class MessageSerializer
           out[key] = val
         i++
     else
-      out = JSON.parse(data)
+      try
+        out = JSON.parse(data)
+      catch error
+        console.log error
     return out
 
   @pullTypeFrom: (msg_raw) ->

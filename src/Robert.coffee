@@ -12,19 +12,16 @@ class Robert extends Emitter
     @assignedColor = ""
 
     @connection.on "ready", =>
-      console.log "Robert ready"
       @ready = true
 
     @connection.on "message", (message) => # When is message used?
-      console.log "Robert message"
-      console.log message
-      @handleMessage(MS) if @ready
+      @handleMessage(MS.deserialize(message)) if @ready
 
   handleMessage: (msg) ->
     switch msg.type
       when TYPES.INV
-        @assignedColor = msg.color
-        @emit "invite", msg.data.gameStart, msg.data.color, acceptInvite
+        @assignedColor = msg.data.color
+        @emit "invite", msg.data.gameStart, msg.data.color, @acceptInvite
 
       when TYPES.POS_UPD
         @emit "pos_upd", msg.data
@@ -35,15 +32,15 @@ class Robert extends Emitter
         newClient.addSnake(new OtherSnake(msg.data.pos, msg.data.color, msg.data.name))
         @emit "new_client", newClient
 
-  acceptInvite = (name) =>
+  acceptInvite: (name) =>
     if name?
-      @connection.transmit MS.serialize({
+      @connection.transmit(MS.serialize({
         type: TYPES.INV_RES,
         data: {
           accept: true,
           color: @assignedColor,
           name: name
         }
-      })
+      }))
 
 MIKE.Robert = Robert

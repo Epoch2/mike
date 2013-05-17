@@ -2,6 +2,8 @@ Robert = MIKE.Robert
 ControllableSnake = MIKE.ControllableSnake
 Keyboard = MIKE.Keyboard
 Game = MIKE.Game
+MikeClient = MIKE.MikeClient
+Vec2 = MIKE.Vec2
 
 class ClientGame extends Game
   constructor: (@canvas) ->
@@ -30,23 +32,26 @@ class ClientGame extends Game
     @server = new Robert("ws://127.0.0.1:1337")
     console.log @server
 
-    @server.on("invite", (@gameStart, color, acceptInvite) =>
-      console.log "invite"
+    @server.on "invite", (@gameStart, color, acceptInvite) =>
       name = "Mike"
+      player = new MikeClient()
+      console.log player
+      snake = new ControllableSnake(new Vec2(300, 300), color, name)
+      console.log snake
+      player.addSnake(new ControllableSnake(new Vec2(300,300), color, name))
+      console.log player
 
-      player = new ControllableSnake(new Vec2(300,300), color, name)
-
-      Keyboard.bind "press", { key: 38, callback: (-> player.move = true) }
-      Keyboard.bind "release", { key: 38, callback: (-> player.move = false) }
-      Keyboard.bind "press", { key: 39, callback: (-> player.right = true) }
-      Keyboard.bind "release", { key: 39, callback: (-> player.right = false) }
-      Keyboard.bind "press", { key: 37, callback: (-> player.left = true) }
-      Keyboard.bind "release", { key: 37, callback: (-> player.left = false) }
+      Keyboard.bind "press", { key: 38, callback: (-> snake.move = true) }
+      Keyboard.bind "release", { key: 38, callback: (-> snake.move = false) }
+      Keyboard.bind "press", { key: 39, callback: (-> snake.right = true) }
+      Keyboard.bind "release", { key: 39, callback: (-> snake.right = false) }
+      Keyboard.bind "press", { key: 37, callback: (-> snake.left = true) }
+      Keyboard.bind "release", { key: 37, callback: (-> snake.left = false) }
 
       @snakes.push player
+      console.log @snakes
 
-      acceptInvite name
-    )
+      acceptInvite(name)
 
     @server.on("new_clients", (client) =>
       @snakes.push client
