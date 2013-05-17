@@ -3,7 +3,7 @@ ControllableSnake = MIKE.ControllableSnake
 Keyboard = MIKE.Keyboard
 Game = MIKE.Game
 
-class ClientGame extends Game
+class ClientGame extends Game # BALLE
   constructor: (@canvas) ->
 
     # Render context
