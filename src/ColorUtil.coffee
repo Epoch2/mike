@@ -1,5 +1,4 @@
 class ColorUtil
-
   randHex = (letters) ->
     letters = letters.split("")
     color = "#"

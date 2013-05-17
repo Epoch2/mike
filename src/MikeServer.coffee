@@ -3,7 +3,7 @@ Emitter = require("./Emitter.js").Emitter
 ColorUtil = require("./ColorUtil.js").ColorUtil
 Snake = require("./Snake.js").Snake
 MikeClient = require("./MikeClient.js").MikeClient
-MikeGame = require("./MikeGame.js").MikeGame
+ServerGame = require("./ServerGame.js").ServerGame
 MS = require("./Net.js").MessageSerializer
 TYPES = require("./Net.js").NetTypes.TYPES
 
@@ -106,11 +106,12 @@ class MikeServer
     this()
 
   runGame: ->
-    game = new MikeGame(@clients)
+    game = new ServerGame(@clients)
     game.gameLoop()
 
 config = {
-
+  https: false,
+  port: 1337
 }
 mikeserver = new MikeServer(config)
-mikeserver.gameLoop()
+mikeserver.runGame()
