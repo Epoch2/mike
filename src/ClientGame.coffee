@@ -3,7 +3,7 @@ ControllableSnake = MIKE.ControllableSnake
 Keyboard = MIKE.Keyboard
 Game = MIKE.Game
 
-class ClientGame extends Game # BALLE
+class ClientGame extends Game
   constructor: (@canvas) ->
 
     # Render context
@@ -26,7 +26,7 @@ class ClientGame extends Game # BALLE
     document.body.appendChild @msStats.domElement
 
     @currentTime = performance.now()
-    @snakes = new Array()
+    @snakes = []
     @server = new Robert("ws://127.0.0.1:1337")
     console.log @server
 
