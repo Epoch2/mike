@@ -4,8 +4,8 @@ ColorUtil = require("./ColorUtil.js").ColorUtil
 Snake = require("./Snake.js").Snake
 MikeClient = require("./MikeClient.js").MikeClient
 MikeGame = require("./MikeGame.js").MikeGame
-MS = require("./NetMessage.js").MessageSerializer
-TYPES = require("./NetMessage.js").NetTypes.TYPES
+MS = require("./Net.js").MessageSerializer
+TYPES = require("./Net.js").NetTypes.TYPES
 
 class MikeServer
   constructor: (config) ->
@@ -109,5 +109,8 @@ class MikeServer
     game = new MikeGame(@clients)
     game.gameLoop()
 
-mikeserver = new MikeServer(@clients)
+config = {
+
+}
+mikeserver = new MikeServer(config)
 mikeserver.gameLoop()

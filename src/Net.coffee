@@ -45,7 +45,7 @@ class MessageSerializer
 
   @serialize: (msg_obj) ->
     return false unless @assertType(msg_obj.type, msg_obj.data)
-    out = msg_obj.type #always prepend fixed length type
+    out = msg_obj.type # Always prepend fixed length type
     out += @compress(msg_obj.type, msg_obj.data)
     return out
 
