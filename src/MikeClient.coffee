@@ -1,13 +1,15 @@
 unless window?
+  Emitter = require("./Emitter.js").Emitter
   BasicSnake = require("./Snake.js").BasicSnake
   OtherSnake = require("./Snake.js").OtherSnake
   ControllableSnake = require("./Snake.js").ControllableSnake
 else
+  Emitter = MIKE.Emitter
   BasicSnake = MIKE.BasicSnake
   OtherSnake = MIKE.OtherSnake
   ControllableSnake = MIKE.ControllableSnake
 
-class MikeClient
+class MikeClient extends Emitter
   constructor: (@connection) ->
     if @connection?
       console.log "hasConnection"
