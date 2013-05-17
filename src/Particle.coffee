@@ -26,7 +26,7 @@ class Particle
     @currPos.add(@vel)
     @forces.set(0,0,0)
 
-  render: (blending) ->
+  render: (ctx, blending) ->
     pos = @currPos.times_s(blending).plus(@prevPos.times_s(1-blending))
     ctx.beginPath()
     ctx.arc(pos.x, pos.y, @radius, 0, Math.PI*2, true)

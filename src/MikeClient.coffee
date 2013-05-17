@@ -1,9 +1,11 @@
 unless window?
-  Snake = require("./Snake.js").Snake
   BasicSnake = require("./Snake.js").BasicSnake
+  OtherSnake = require("./Snake.js").OtherSnake
+  ControllableSnake = require("./Snake.js").ControllableSnake
 else
-  Snake = MIKE.Snake
   BasicSnake = MIKE.BasicSnake
+  OtherSnake = MIKE.OtherSnake
+  ControllableSnake = MIKE.ControllableSnake
 
 class MikeClient
   constructor: (@connection) ->
@@ -11,11 +13,17 @@ class MikeClient
       @connection.on "message", (msg) =>
         @emit "message", (msg)
 
-      @connection.on "close", (code, reason) =>
+      @connection.on "close", (code, reason) => # When is code and reason used?
         @emit "disconnect"
 
   addSnake: (snake) ->
-    if snake instanceof BasicSnake or snake instanceof Snake
+    if snake instanceof BasicSnake or snake instanceof OtherSnake or snake instanceof ControllableSnake
       @snake = snake
     else
       throw "Illegal snake of type #{typeof snake}"
+
+unless window?
+  module.exports = exports
+  exports.MikeClient = MikeClient
+else
+  MIKE.MikeClient = MikeClient

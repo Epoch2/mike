@@ -1,7 +1,7 @@
 Emitter = MIKE.Emitter
 Connection = MIKE.Connection
 MikeClient = MIKE.MikeClient
-Snake = MIKE.Snake
+OtherSnake = MIKE.OtherSnake
 MS = MIKE.MessageSerializer
 TYPES = MIKE.NetTypes.TYPES
 
@@ -14,7 +14,7 @@ class Robert extends Emitter
     @connection.on "ready", =>
       @ready = true
 
-    @connection.on "message", (message) =>
+    @connection.on "message", (message) => # When is message used?
       @handleMessage(MS) if @ready
 
   handleMessage: (msg) ->
@@ -41,3 +41,5 @@ class Robert extends Emitter
         name: name
       }
     })
+
+MIKE.Robert = Robert

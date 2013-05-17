@@ -51,9 +51,9 @@ class BasicSnake
     @vel = vel
     @dir = dir
 
-  render: (blending) ->
+  render: (ctx, blending) ->
     for i in [@particles.length-1.. 0]
-      @particles[i].render(blending)
+      @particles[i].render(ctx, blending)
 
     ctx.font = "15px Arial"
     ctx.fillStyle = "#fff"

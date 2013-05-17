@@ -1,10 +1,15 @@
 class ColorUtil
-  @niceColor: ->
-    letters = "0123456789abcdef".split("")
+
+  randHex = (letters) ->
+    letters = letters.split("")
     color = "#"
     for i in [0.. 5]
       color += letters[Math.floor(Math.random()*(letters.length-1))]
     return color
+
+  @randomColor: -> randHex "0123456789abcdef"
+
+  @niceColor: -> randHex "56789abcdef"
 
   @rgbToHex: (r, g, b) ->
     return "" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
