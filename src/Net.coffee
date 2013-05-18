@@ -52,14 +52,13 @@ class MessageSerializer
   @COMPRESSIBLE_CLASSES: [Vec2]
 
   @serialize: (msg_obj) ->
-    console.log "Type: #{msg_obj.type}"
-    throw("THOSEUSOEUt") unless @assertType(msg_obj.type, msg_obj.data)
+    @assertType(msg_obj.type, msg_obj.data)
     out = msg_obj.type # Always prepend fixed length type
     out += @compress(msg_obj.type, msg_obj.data)
     return out
 
   @deserialize: (msg_raw) ->
-    throw "INVALID MESSAGE" unless msg_raw.length >= @TYPE_LENGTH
+    throw "Empty message." unless msg_raw.length >= @TYPE_LENGTH
     type = @pullTypeFrom(msg_raw)
     msg_raw = @removeTypeFrom(msg_raw)
     out = {
@@ -92,10 +91,8 @@ class MessageSerializer
         if typeof d is "object"
           for cla in @COMPRESSIBLE_CLASSES
             if d instanceof cla
-              # d is of compressible class
               if "serialize" of cla
-                # d's class has serialization methods
-                out += (@OBJECT_IDENT + cla.serialize(d))
+                out += cla.serialize(d)
                 break
               else
                 throw "Cannot serialize object of type #{cla}"
@@ -113,12 +110,11 @@ class MessageSerializer
       i = 0
       for key in @COMPRESSION_PATTERNS[type]
         val = vals[i]
-        if val[0] is @OBJECT_IDENT
-          # This val is an object
-          # Deserialize it correctly by determining its type with the type identifier at val[1]
-          (out[key] = cla.deserialize(val); break) for cla in @COMPRESSIBLE_CLASSES when val[1] is cla.TYPE_IDENT
-        else
-          out[key] = val
+        for cla in @COMPRESSIBLE_CLASSES
+          if val[0] is cla.TYPE_IDENT
+            out[key] = cla.deserialize(val)
+            # break
+        out[key] = val unless out[key]?
         i++
     else
       try
@@ -135,11 +131,12 @@ class MessageSerializer
     return msg_raw.substring(@TYPE_LENGTH+1)
 
   @assertType: (type, obj) ->
-    return @assertKeys(obj, @STRUCTURES[type])
+    try
+      @assertKeys(obj, @STRUCTURES[type])
+    catch error
+      throw error
 
   @assertKeys: (obj, checks) ->
-    console.log obj
-    console.log checks
     # Asserts that an object, 'obj', contains the keys
     # specified in 'checks', and that their values
     # are of the specified type.
@@ -153,8 +150,9 @@ class MessageSerializer
     # })
 
     for key of obj
-      return false unless typeof obj[key] is checks[key]
-    return true
+      throw "No value found for '#{key}'" unless obj[key]?
+      throw "No check found for '#{key}'" unless checks[key]
+      throw "Value at '#{key}' is not of type '#{checks[key]}'!" unless typeof obj[key] is checks[key]
 
   @typecast: (obj, casts) ->
     # Casts all values of 'obj' to match the

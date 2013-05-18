@@ -1,14 +1,16 @@
 class ColorUtil
-  randHex = (letters) ->
+  @randomHex: (letters) ->
+    ALLOWED_LETTERS = "0123456789abcdef".split("")
+    for letter in letters
+      throw "Invalid HEX-letters #{letters}" unless letter in ALLOWED_LETTERS
     letters = letters.split("")
     color = "#"
     for i in [0..5]
       color += letters[Math.floor(Math.random()*(letters.length-1))]
     return color
 
-  @randomColor: -> randHex "0123456789abcdef"
-
-  @niceColor: -> randHex "56789abcdef"
+  @randomColor: -> @randomHex "0123456789abcdef"
+  @niceColor: -> @randomHex "56789abcdef"
 
   @rgbToHex: (r, g, b) ->
     return "" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)

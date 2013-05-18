@@ -15,7 +15,6 @@ class Robert extends Emitter
       @ready = true
 
     @connection.on "message", (message) =>
-      console.log message
       @handleMessage(MS.deserialize(message)) if @ready
 
   handleMessage: (msg) ->
@@ -25,7 +24,6 @@ class Robert extends Emitter
         @emit "game:invite", msg.data.gameStart, msg.data.color, @acceptInvite
 
       when TYPES.POS_UPD
-        console.log msg.data
         @emit "client:pos_upd", msg.data
 
       when TYPES.NEW_CLIENT

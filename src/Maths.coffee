@@ -1,5 +1,5 @@
 class Maths
-  @toRadians: (deg) -> deg * (Math.PI/180)
+  @toRadians: (deg) -> deg * (Math.PI / 180)
   @toDegrees: (rad) -> rad * (180 / Math.PI)
 
 unless window?

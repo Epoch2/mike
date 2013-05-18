@@ -2,13 +2,14 @@ unless window?
   Vec2 = require("./Vec2.js").Vec2
   Spring = require("./Spring.js").Spring
   Particle = require("./Particle.js").Particle
+  Maths = require("./Maths.js").Maths
 else
   Vec2 = MIKE.Vec2
   Spring = MIKE.Spring
   Particle = MIKE.Particle
+  Maths = MIKE.Maths
 
 class BasicSnake
-  # Snake skeleton for server-side usage
   constructor: (position, @color, @name) ->
     @anim = 0
     @dir = new Vec2(-1, 0)
@@ -82,9 +83,9 @@ class ControllableSnake extends BasicSnake
       spring.solve()
 
     if @move
-      @dir.rotate(MIKE.Maths.toRadians(-0.5)) if @right
-      @dir.rotate(MIKE.Maths.toRadians(0.5)) if @left
-      @dir.rotate(MIKE.Maths.toRadians(Math.sin(@iterations+=0.04)))
+      @dir.rotate(Maths.toRadians(-0.5)) if @right
+      @dir.rotate(Maths.toRadians(0.5)) if @left
+      @dir.rotate(Maths.toRadians(Math.sin(@iterations+=0.04)))
       @particles[0].vel.add(@dir.times_s(@speed))
     else
       @dir = @particles[0].currPos.minus(@particles[2].currPos).unit()
