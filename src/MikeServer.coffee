@@ -42,54 +42,76 @@ class MikeServer
     switch msg.type
       when TYPES.INV_RES
         console.log "INV_RES"
-        x = Math.random()*200
-        y = Math.random()*200
-        snake = new Snake(new Vec2(x, y), client.color, msg.data.name)
-        snake.move = true
-        client.addSnake snake
-        @addClientAsync(client) if msg.data.color is client.color and msg.data.accept
+        if msg.data.color is client.color and msg.data.accept
+          x = Math.random()*600
+          y = Math.random()*600
+          snake = new Snake(new Vec2(x, y), client.color, msg.data.name)
+          client.addSnake snake
+          client.id = @IDs++
+          @addClientAsync(client)
 
-      when TYPES.MOV_UPD
-        return false unless getClient(client)? # Don't update nonexistent clients
-        client.snake.move = msg.data.move
-        client.snake.left = msg.data.left
-        client.snake.right = msg.data.right
-
-  broadcast: (message) ->
-    @msg_count++
-    client.connection.transmit(MS.serialize(message)) for client in @clients
-
-  addClientAsync: (client) ->
-    if client.connection? and client.snake?
-      process.nextTick(=>
-        client.id = @IDs
-        @IDs++
-        # Make sure client is removed upon disconnect
-        # (null pointer prevention)
-        client.on "disconnect", =>
-          @delClientAsync(client)
-        @broadcast {
-          type: TYPES.NEW_CLIENT,
-          data: {
+          clientData = {
             id: client.id,
             name: client.snake.name,
             color: client.snake.color,
             pos: client.snake.getPos()
           }
-        }
 
-        for cli in @clients
-          client.connection.transmit(MS.serialize({
+          # Tell everyone about client
+          @broadcast({
             type: TYPES.NEW_CLIENT,
-            data: {
+            data: clientData
+          }, client)
 
+          # Give client to player
+          client.connection.transmit(MS.serialize({
+            type: TYPES.PLR_CLIENT,
+            data: clientData
+          }))
+
+          # Tell new client about everyone else
+          for cli in @clients
+            if cli isnt client
+              client.connection.transmit(MS.serialize({
+                type: TYPES.NEW_CLIENT,
+                data: {
+                  id: cli.id,
+                  name: cli.snake.name,
+                  color: cli.snake.color,
+                  pos: cli.snake.getPos()
+                }
+              }))
+
+      when TYPES.MOV_UPD
+        console.log "mov upd"
+        return false unless @clientExists(client) # Don't update nonexistent clients
+        client.snake.move = msg.data.move
+        client.snake.left = msg.data.left
+        client.snake.right = msg.data.right
+
+  broadcast: (message, exceptions...) ->
+    process.nextTick(=>
+      client.connection.transmit(MS.serialize(message)) for client in @clients when not (client in exceptions)
+    )
+
+  addClientAsync: (client) ->
+    if client.connection? and client.snake?
+      process.nextTick(=>
+        # Make sure client is removed upon disconnect
+        # (null pointer prevention)
+        client.on "disconnect", =>
+          @delClientAsync(client)
+          @broadcast {
+            type: TYPES.DEL_CLIENT,
+            data: {
+              id: client.id
             }
-            }))
+          }, client
 
         @clients.push(client)
       )
     else
-      throw "addClientAsync won't add client without connection or snake"
+      throw "addClientAsync won't add client with missing connection or snake"
 
 
   delClientAsync: (client) ->

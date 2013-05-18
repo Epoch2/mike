@@ -15,6 +15,7 @@ class NetTypes
     POS_UPD: "05",      # 05 Position update            <
     NEW_CLIENT: "06",   # 06 Add client                 <
     DEL_CLIENT: "07"    # 07 Remove client              <
+    PLR_CLIENT: "08"    # 08 Player client              <
   }
 
 class MessageSerializer
@@ -30,12 +31,13 @@ class MessageSerializer
   @STRUCTURES: {}
   @STRUCTURES[@TYPES.PING] = {"id": "number", "sent": "number"}
   @STRUCTURES[@TYPES.PONG] = {"id": "number", "sent": "number"}
-  @STRUCTURES[@TYPES.INV] = {"color": "string", "gameStart": "number"}
+  @STRUCTURES[@TYPES.INV] = {"number", "color": "string", "gameStart": "number"}
   @STRUCTURES[@TYPES.INV_RES] = {"accept": "boolean", "color": "string", "name": "string"}
   @STRUCTURES[@TYPES.MOV_UPD] = {"move": "boolean", "left": "boolean", "right": "boolean"}
   @STRUCTURES[@TYPES.POS_UPD] = {"id": "number", "pos": "object", "vel": "object", "dir": "object"}
   @STRUCTURES[@TYPES.NEW_CLIENT] = {"id": "number", "name": "string", "color": "string", "pos": "object"}
   @STRUCTURES[@TYPES.DEL_CLIENT] = {"id": "number"}
+  @STRUCTURES[@TYPES.PLR_CLIENT] = {"id": "number", "name": "string", "color": "string", "pos": "object"}
 
   # Compression patterns
   @COMPRESSION_PATTERNS: {}
@@ -47,6 +49,7 @@ class MessageSerializer
   @COMPRESSION_PATTERNS[@TYPES.POS_UPD] = ["id", "pos", "vel", "dir"]
   @COMPRESSION_PATTERNS[@TYPES.NEW_CLIENT] = ["id", "name", "color", "pos"]
   @COMPRESSION_PATTERNS[@TYPES.DEL_CLIENT] = ["id"]
+  @COMPRESSION_PATTERNS[@TYPES.PLR_CLIENT] = ["id", "name", "color", "pos"]
 
   # Classes with serialization methods
   @COMPRESSIBLE_CLASSES: [Vec2]

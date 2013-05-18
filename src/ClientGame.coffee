@@ -9,10 +9,6 @@ class ClientGame extends Game
   constructor: (@canvas) ->
     super()
 
-    console.log @accumulator
-    console.log @MAX_RENDER_DT
-    console.log @t
-
     # Render context
     @ctx = @canvas.getContext("2d")
 
@@ -39,35 +35,31 @@ class ClientGame extends Game
 
     @server.on "game:invite", (@gameStart, color, acceptInvite) =>
       console.log "game:invite"
-      name = "Mike"
-      player = new MikeClient()
-      snake = new Snake(new Vec2(300, 300), color, name)
-      player.addSnake(snake)
-      console.log player
-
-      Keyboard.bind "press", { key: 38, callback: (-> snake.move = true) }
-      Keyboard.bind "release", { key: 38, callback: (-> snake.move = false) }
-      Keyboard.bind "press", { key: 39, callback: (-> snake.right = true) }
-      Keyboard.bind "release", { key: 39, callback: (-> snake.right = false) }
-      Keyboard.bind "press", { key: 37, callback: (-> snake.left = true) }
-      Keyboard.bind "release", { key: 37, callback: (-> snake.left = false) }
-
-      @clients.push player
-      console.log @clients
-
+      letters = "abcdefghijklmnopqrstuvxyz".split("")
+      name = ""
+      name += letters[Math.floor(Math.random() * letters.length)] for i in [0..5]
       acceptInvite(name)
+
+    @server.on "client:player", (client) =>
+      Keyboard.bind "press", { key: 38, callback: (=> client.snake.move = true; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
+      Keyboard.bind "release", { key: 38, callback: (=> client.snake.move = false; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
+      Keyboard.bind "press", { key: 39, callback: (=> client.snake.right = true; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
+      Keyboard.bind "release", { key: 39, callback: (=> client.snake.right = false; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
+      Keyboard.bind "press", { key: 37, callback: (=> client.snake.left = true; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
+      Keyboard.bind "release", { key: 37, callback: (=> client.snake.left = false; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
+      @clients.push client
 
     @server.on "client:new", (client) =>
       @clients.push client
 
-    @server.on "client:remove", (id) =>
+    @server.on "client:delete", (id) =>
       @clients.splice(i,1) for client, i in @clients when client.id is id
 
     @server.on "client:pos_upd", (update) =>
       # Update position of client with id "id"
       for client in @clients
         if client.id is update.id
-          client.snake.correctionUpdate(update.pos, update.vel, update.dir)
+          client.snake.correctionUpdate(update.pos.copy(), update.vel.copy(), update.dir.copy())
           break
 
   update: (dt) ->

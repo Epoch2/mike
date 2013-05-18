@@ -10,6 +10,7 @@ class MikeClient extends Emitter
         @emit "message", msg
 
       @connection.on "close", (code, reason) => # When is code and reason used?
+        console.log "MikeClient -> close"
         @emit "disconnect"
 
   addSnake: (snake) ->
