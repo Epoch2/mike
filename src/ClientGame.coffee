@@ -35,9 +35,7 @@ class ClientGame extends Game
 
     @server.on "game:invite", (@gameStart, color, acceptInvite) =>
       console.log "game:invite"
-      letters = "abcdefghijklmnopqrstuvxyz".split("")
-      name = ""
-      name += letters[Math.floor(Math.random() * letters.length)] for i in [0..5]
+      name = color
       acceptInvite(name)
 
     @server.on "client:player", (client) =>

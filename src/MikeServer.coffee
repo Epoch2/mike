@@ -53,7 +53,7 @@ class MikeServer
           clientData = {
             id: client.id,
             name: client.snake.name,
-            color: client.snake.color,
+            color: client.snake.getColor(),
             pos: client.snake.getPos()
           }
 
@@ -77,7 +77,7 @@ class MikeServer
                 data: {
                   id: cli.id,
                   name: cli.snake.name,
-                  color: cli.snake.color,
+                  color: cli.snake.getColor(),
                   pos: cli.snake.getPos()
                 }
               }))
@@ -85,6 +85,7 @@ class MikeServer
       when TYPES.MOV_UPD
         console.log "mov upd"
         return false unless @clientExists(client) # Don't update nonexistent clients
+        console.log "mov upd comp"
         client.snake.move = msg.data.move
         client.snake.left = msg.data.left
         client.snake.right = msg.data.right
