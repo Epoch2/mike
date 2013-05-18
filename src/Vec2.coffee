@@ -1,5 +1,5 @@
 class Vec2
-  constructor: (@x, @y, restAngle) -> @restAngle = restAngle or 0 # Allow recreation of vector with intact restAngle for serialization purposes
+  constructor: (@x, @y) -> @restAngle = 0 # Allow recreation of vector with intact restAngle for serialization purposes
 
   @TYPE_IDENT: ">"  # This identifies the serialized object as an object of type "Vec2"
   @SERIALIZATION_REGEX: /(-{0,1}\d+\.{0,1}\d+),(-{0,1}\d+\.{0,1}\d+)$/

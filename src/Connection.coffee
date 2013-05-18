@@ -27,7 +27,6 @@ class Connection extends Emitter
         @emit "close", evt.code, evt.reason
 
   transmit: (msg) ->
-    console.log msg
     try
       @ws.send(msg)
       return null

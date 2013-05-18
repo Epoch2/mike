@@ -151,7 +151,6 @@ class MikeServer
     @msg_pretime = @time()
 
     for client in @clients
-      console.log client.snake.getPos()
       @msg_count++
       @broadcast({
         type: TYPES.POS_UPD,
