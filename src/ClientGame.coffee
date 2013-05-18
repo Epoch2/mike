@@ -46,9 +46,11 @@ class ClientGame extends Game
       Keyboard.bind "press", { key: 37, callback: (=> client.snake.left = true; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
       Keyboard.bind "release", { key: 37, callback: (=> client.snake.left = false; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
       @clients.push client
+      console.log "In control of ##{client.id}"
 
     @server.on "client:new", (client) =>
       @clients.push client
+      console.log "##{client.id} was added to the game."
 
     @server.on "client:delete", (id) =>
       @clients.splice(i,1) for client, i in @clients when client.id is id

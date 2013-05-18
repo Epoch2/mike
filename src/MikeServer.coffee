@@ -48,7 +48,7 @@ class MikeServer
           snake = new Snake(new Vec2(x, y), client.color, msg.data.name)
           client.addSnake snake
           client.id = @IDs++
-          @addClientAsync(client)
+          @addClient(client)
 
           clientData = {
             id: client.id,
@@ -90,27 +90,29 @@ class MikeServer
 
   broadcast: (message, exceptions...) ->
     process.nextTick(=>
-      client.connection.transmit(MS.serialize(message)) for client in @clients when not (client in exceptions)
+      for client in @clients
+        excepted = false
+        for exp in exceptions
+          excepted = if client.id is exp.id then true else false
+        client.connection.transmit(MS.serialize(message)) unless excepted
     )
 
-  addClientAsync: (client) ->
+  addClient: (client) ->
     if client.connection? and client.snake?
-      process.nextTick(=>
-        # Make sure client is removed upon disconnect
-        # (null pointer prevention)
-        client.on "disconnect", =>
-          @delClientAsync(client)
-          @broadcast {
-            type: TYPES.DEL_CLIENT,
-            data: {
-              id: client.id
-            }
-          }, client
+      # Make sure client is removed upon disconnect
+      # (null pointer prevention)
+      client.on "disconnect", =>
+        @delClientByID(client.id)
+        @broadcast {
+          type: TYPES.DEL_CLIENT,
+          data: {
+            id: client.id
+          }
+        }, client
 
-        @clients.push(client)
-      )
+      @clients.push(client)
     else
-      throw "addClientAsync won't add client with missing connection or snake"
+      throw "addClient won't add client with missing connection or snake"
 
 
   delClientAsync: (client) ->
@@ -118,10 +120,8 @@ class MikeServer
       @clients.splice(i,1) for cli, i in @clients when cli is client
     )
 
-  delClientByIDAsync: (ID) ->
-    process.nextTick(=>
-      @clients.splice(i,1) for client, i in @clients when client?.ID is ID
-    )
+  delClientByID: (ID) ->
+    @clients.splice(i,1) for client, i in @clients when client?.ID is ID
 
   clientExists: (client) ->
     for cli in @clients
