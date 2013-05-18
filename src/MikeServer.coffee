@@ -15,11 +15,7 @@ class MikeServer
     @IDs = 0
     @activeColors = []
     @NET_UPDATE_DT = 1000/60
-    @msg_pretime = 0
-    @msg_posttime = 0
     @msg_count = 0
-    @msg_rate = 0
-    @msg_print_dt = 0
 
     @time = ->
       t = process.hrtime()
@@ -60,6 +56,7 @@ class MikeServer
         client.snake.right = msg.data.right
 
   broadcast: (message) ->
+    @msg_count++
     client.connection.transmit(MS.serialize(message)) for client in @clients
 
   addClientAsync: (client) ->
@@ -143,15 +140,7 @@ class MikeServer
     )
 
   broadcastLoop: ->
-    @msg_rate = Math.round(((@msg_count/((@msg_posttime - @msg_pretime)/1000))*10)/10)
-    if (@time() - @msg_print_dt) > 1000
-      @msg_print_dt = @time()
-      console.log "#{@msg_rate} msg/s"
-    @msg_count = 0
-    @msg_pretime = @time()
-
     for client in @clients
-      @msg_count++
       @broadcast({
         type: TYPES.POS_UPD,
         data: {
@@ -161,7 +150,6 @@ class MikeServer
           dir: client.snake.getDir()
         }
       })
-    @msg_posttime = @time()
 
     setTimeout (=> @broadcastLoop()), @NET_UPDATE_DT
 
