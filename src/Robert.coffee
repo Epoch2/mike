@@ -27,7 +27,6 @@ class Robert extends Emitter
         @emit "client:pos_upd", msg.data
 
       when TYPES.NEW_CLIENT
-        alert("Someone joined!")
         newClient = new MikeClient()
         newClient.id = msg.data.id
         newClient.addSnake(new Snake(msg.data.pos, msg.data.color, msg.data.name))

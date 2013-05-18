@@ -16,6 +16,7 @@ class MikeServer
     @activeColors = []
     @NET_UPDATE_DT = 1000/60
     @msg_count = 0
+    @cl_c = null
 
     @time = ->
       t = process.hrtime()
@@ -39,6 +40,11 @@ class MikeServer
           }))
 
   handleClientMessage: (msg, client) ->
+    if @cl_c?.id isnt client?.id
+      console.log "DIFFERENT CLIENT"
+      @cl_c = client
+    else
+      console.log "SAME CLIENT"
     switch msg.type
       when TYPES.INV_RES
         console.log "INV_RES"
@@ -47,7 +53,8 @@ class MikeServer
           y = Math.random()*600
           snake = new Snake(new Vec2(x, y), client.color, msg.data.name)
           client.addSnake snake
-          client.id = @IDs++
+          client.id = @IDs
+          @IDs++
           @addClient(client)
 
           clientData = {
@@ -83,6 +90,7 @@ class MikeServer
               }))
 
       when TYPES.MOV_UPD
+        console.log "Movupd: #{client.id}"
         return false unless @clientExists(client) # Don't update nonexistent clients
         client.snake.move = msg.data.move
         client.snake.left = msg.data.left
@@ -165,6 +173,7 @@ class MikeServer
             comparison = Math.max(comparison, ColorUtil.compareColors(newColor, activeColor))
         else
           comparison = 0
+      @activeColors.push(newColor)
       callback(newColor)
     )
 
