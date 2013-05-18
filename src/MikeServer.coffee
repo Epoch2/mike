@@ -60,6 +60,7 @@ class MikeServer
         client.snake.right = msg.data.right
 
   broadcast: (message) ->
+    console.log "broadcasting shit"
     client.connection.transmit(MS.serialize(message)) for client in @clients
 
   addClientAsync: (client) ->

@@ -85,7 +85,7 @@ class ControllableSnake extends BasicSnake
     if @move
       @dir.rotate(Maths.toRadians(-0.5)) if @right
       @dir.rotate(Maths.toRadians(0.5)) if @left
-      @dir.rotate(Maths.toRadians(Math.sin(@iterations+=0.04)))
+      @dir.rotate(Maths.toRadians(Math.sin(@anim+=0.04)))
       @particles[0].vel.add(@dir.times_s(@speed))
     else
       @dir = @particles[0].currPos.minus(@particles[2].currPos).unit()

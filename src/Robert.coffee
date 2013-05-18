@@ -18,6 +18,7 @@ class Robert extends Emitter
       @handleMessage(MS.deserialize(message)) if @ready
 
   handleMessage: (msg) ->
+    console.log msg.type
     switch msg.type
       when TYPES.INV
         @assignedColor = msg.data.color
