@@ -178,8 +178,11 @@ class MessageSerializer
     # as opposed to parseInt() and parseFloat()
     # whom only parses their own types
     # respectively.
+    parseBool = (bool) ->
+      return if bool is "true" then true else false
+
     castMethods = {
-      "boolean": Boolean,
+      "boolean": parseBool,
       "string": String,
       "number": Number
     }

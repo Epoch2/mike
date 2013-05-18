@@ -24,18 +24,15 @@ class Robert extends Emitter
         @emit "game:invite", msg.data.gameStart, msg.data.color, @acceptInvite
 
       when TYPES.POS_UPD
-        console.log msg.data.id
         @emit "client:pos_upd", msg.data
 
       when TYPES.NEW_CLIENT
-        console.log "new client"
         newClient = new MikeClient()
         newClient.id = msg.data.id
         newClient.addSnake(new Snake(msg.data.pos, msg.data.color, msg.data.name))
         @emit "client:new", newClient
 
       when TYPES.PLR_CLIENT
-        console.log "plr client"
         newClient = new MikeClient()
         newClient.id = msg.data.id
         newClient.addSnake(new Snake(msg.data.pos, msg.data.color, msg.data.name))
@@ -57,6 +54,7 @@ class Robert extends Emitter
       }))
 
   sendMovUpdate: (move, left, right) ->
+    console.log "#{move}, #{left}, #{right}"
     @connection.transmit(MS.serialize({
       type: TYPES.MOV_UPD,
       data: {

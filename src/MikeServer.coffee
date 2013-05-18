@@ -83,9 +83,7 @@ class MikeServer
               }))
 
       when TYPES.MOV_UPD
-        console.log "mov upd"
         return false unless @clientExists(client) # Don't update nonexistent clients
-        console.log "mov upd comp"
         client.snake.move = msg.data.move
         client.snake.left = msg.data.left
         client.snake.right = msg.data.right
