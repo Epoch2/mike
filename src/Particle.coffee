@@ -37,6 +37,7 @@ class Particle
   getPos: -> @currPos.copy()
   getRad: -> @radius
   getVel: -> @vel.copy()
+  getColor: -> @color
 
 unless window?
   module.exports = exports

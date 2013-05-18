@@ -10,7 +10,7 @@ else
   Maths = MIKE.Maths
 
 class Snake
-  constructor: (position, @color, @name) ->
+  constructor: (position, color, @name) ->
     @anim = 0
     @dir = new Vec2(-1, 0)
 
@@ -36,7 +36,7 @@ class Snake
     for i in [0..num-1]
       rad = radius*(1-i/num)
       pos = pos.plus(new Vec2(springLen, 0))
-      @particles.push(new Particle(pos, rad, @color, new Vec2(0,0))) # Color
+      @particles.push(new Particle(pos, rad, color, new Vec2(0,0)))
     @particles[0].head = true
     @head = @particles[0]
     # Springs
@@ -47,6 +47,7 @@ class Snake
   getVel: -> @head.getVel()
   getDir: -> @dir.copy()
   getRad: -> @head.getRad()
+  getColor: -> @head.getColor()
 
   correctionUpdate: (pos, vel, dir) ->
     @currPos = pos
