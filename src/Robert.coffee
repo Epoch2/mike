@@ -54,7 +54,6 @@ class Robert extends Emitter
       }))
 
   sendMovUpdate: (move, left, right) ->
-    console.log "#{move}, #{left}, #{right}"
     @connection.transmit(MS.serialize({
       type: TYPES.MOV_UPD,
       data: {

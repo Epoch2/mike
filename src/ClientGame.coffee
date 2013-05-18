@@ -34,7 +34,6 @@ class ClientGame extends Game
     console.log @server
 
     @server.on "game:invite", (@gameStart, color, acceptInvite) =>
-      console.log "game:invite"
       name = color
       acceptInvite(name)
 
