@@ -43,10 +43,10 @@ class Snake
     for i in [0.. num-2]
       @springs.push(new Spring(@particles[i], @particles[i+1], springConst, springLen, springFriction))
 
-  getPos: -> @particles[0].getPos()
-  getVel: -> @particles[0].getVel()
+  getPos: -> @head.getPos()
+  getVel: -> @head.getVel()
   getDir: -> @dir.copy()
-  getRad: -> @particles[0].getRad()
+  getRad: -> @head.getRad()
 
   correctionUpdate: (pos, vel, dir) ->
     @currPos = pos
@@ -59,7 +59,7 @@ class Snake
 
     ctx.font = "15px Arial"
     ctx.fillStyle = "#fff"
-    pos = @particles[0].currPos.plus(new Vec2(@name.split("").length * -3, -20))
+    pos = @head.currPos.plus(new Vec2(@name.split("").length * -3, -20))
     ctx.fillText(@name, pos.x, pos.y)
 
   update: (dt) ->
@@ -70,9 +70,9 @@ class Snake
       @dir.rotate(Maths.toRadians(-0.5)) if @right
       @dir.rotate(Maths.toRadians(0.5)) if @left
       @dir.rotate(Maths.toRadians(Math.sin(@anim+=0.04)))
-      @particles[0].vel.add(@dir.times_s(@speed))
+      @head.vel.add(@dir.times_s(@speed))
     else
-      @dir = @particles[0].currPos.minus(@particles[2].currPos).unit()
+      @dir = @head.currPos.minus(@particles[2].currPos).unit()
 
     for particle in @particles
       particle.update(dt)
