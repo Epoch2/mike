@@ -2,9 +2,7 @@ class Vec2
   constructor: (@x, @y, restAngle) -> @restAngle = restAngle or 0 # Allow recreation of vector with intact restAngle for serialization purposes
 
   @TYPE_IDENT: ">"  # This identifies the serialized object as an object of type "Vec2"
-  # @SERIALIZATION_REGEX: /(\d*),(\d*),(\d*)$/
-  @SERIALIZATION_REGEX: /(\d*),(\d*)$/
-  # @serialize: (vec) -> "#{@TYPE_IDENT}#{vec.x},#{vec.y},#{vec.restAngle}"
+  @SERIALIZATION_REGEX: /(-{0,1}\d+\.{0,1}\d+),(-{0,1}\d+\.{0,1}\d+)$/
   @serialize: (vec) -> "#{@TYPE_IDENT}#{vec.x},#{vec.y}"
   @deserialize: (vec) -> res = vec.match(@SERIALIZATION_REGEX); new Vec2(Number(res[1]), Number(res[2]), Number(res[3]))
 
