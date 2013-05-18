@@ -50,8 +50,8 @@ class Snake
   getColor: -> @head.getColor()
 
   correctionUpdate: (pos, vel, dir) ->
-    @currPos = pos
-    @vel = vel
+    @head.currPos = pos
+    @head.vel = vel
     @dir = dir
 
   render: (ctx, blending) ->
