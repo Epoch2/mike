@@ -30,7 +30,8 @@ class ClientGame extends Game
 
     @currentTime = performance.now()
     @clients = []
-    @server = new Robert("ws://127.0.0.1:1337")
+    #@server = new Robert("ws://127.0.0.1:1337")
+    @server = new Robert("ws://arch.jvester.se:1337")
     console.log @server
 
     @server.on "game:invite", (@gameStart, color, acceptInvite) =>
