@@ -1,8 +1,6 @@
 unless window?
   Emitter = require("./Emitter.js").Emitter
-  BasicSnake = require("./Snake.js").BasicSnake
-  OtherSnake = require("./Snake.js").OtherSnake
-  ControllableSnake = require("./Snake.js").ControllableSnake
+  Snake = require("./Snake.js").Snake
 else
   Emitter = MIKE.Emitter
   BasicSnake = MIKE.BasicSnake
@@ -19,7 +17,7 @@ class MikeClient extends Emitter
         @emit "disconnect"
 
   addSnake: (snake) ->
-    if snake instanceof OtherSnake or snake instanceof ControllableSnake
+    if snake instanceof Snake
       @snake = snake
     else
       throw "Illegal snake of type #{typeof snake}"

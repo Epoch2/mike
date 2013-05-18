@@ -1,7 +1,7 @@
 Emitter = MIKE.Emitter
 Connection = MIKE.Connection
 MikeClient = MIKE.MikeClient
-OtherSnake = MIKE.OtherSnake
+Snake = MIKE.Snake
 MS = MIKE.MessageSerializer
 TYPES = MIKE.NetTypes.TYPES
 
@@ -29,7 +29,7 @@ class Robert extends Emitter
       when TYPES.NEW_CLIENT
         newClient = new MikeClient()
         newClient.id = msg.data.id
-        newClient.addSnake(new OtherSnake(msg.data.pos, msg.data.color, msg.data.name))
+        newClient.addSnake(new Snake(msg.data.pos, msg.data.color, msg.data.name))
         @emit "client:new", newClient
 
   acceptInvite: (name) =>

@@ -1,5 +1,5 @@
 Robert = MIKE.Robert
-ControllableSnake = MIKE.ControllableSnake
+Snake = MIKE.Snake
 Keyboard = MIKE.Keyboard
 Game = MIKE.Game
 MikeClient = MIKE.MikeClient
@@ -36,7 +36,7 @@ class ClientGame extends Game
       console.log "game:invite"
       name = "Mike"
       player = new MikeClient()
-      snake = new ControllableSnake(new Vec2(300, 300), color, name)
+      snake = new Snake(new Vec2(300, 300), color, name)
       player.addSnake(snake)
       console.log player
 

@@ -9,7 +9,6 @@ class ServerGame extends Game
       t = process.hrtime()
       return (t[0] * 1e9 + t[1])/1000000
     @currentTime = @time()
-    @accumulator = 0
 
   update: (dt) ->
     client.snake.update dt for client in @clients

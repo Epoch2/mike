@@ -1,7 +1,7 @@
 ConnectionServer = require("./ConnectionServer.js").ConnectionServer
 Emitter = require("./Emitter.js").Emitter
 ColorUtil = require("./ColorUtil.js").ColorUtil
-ControllableSnake = require("./Snake.js").ControllableSnake
+Snake = require("./Snake.js").Snake
 Vec2 = require("./Vec2.js").Vec2
 MikeClient = require("./MikeClient.js").MikeClient
 ServerGame = require("./ServerGame.js").ServerGame
@@ -48,7 +48,7 @@ class MikeServer
         console.log "INV_RES"
         x = Math.random()*200
         y = Math.random()*200
-        snake = new ControllableSnake(new Vec2(x, y), client.color, msg.data.name)
+        snake = new Snake(new Vec2(x, y), client.color, msg.data.name)
         snake.move = true
         client.addSnake snake
         @addClientAsync(client) if msg.data.color is client.color and msg.data.accept
