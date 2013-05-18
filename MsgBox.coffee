@@ -8,7 +8,7 @@ class MsgBoxManager
 		$("msgBox header h1").append box.$title
 		$("msgBox .body").append box.$body
 		$("msgBox footer").append box.$footer
-		$("msgBox").css "display", "absolute"
+		$("msgBox").css "display", "block"
 
 	@hide: ->
 		$("msgBox").css "display", "none"

@@ -2,13 +2,33 @@
 
 body {
     margin: 0px;
-    background: url("img/background.png");
-    background-size: cover;
-    background-color: #000;
     overflow: hidden;
     font-family: Arial, sans-serif;
     color: #444;
     line-height: 140%;
+
+    background: #001225; /* Old browsers */
+		background: -moz-radial-gradient(center, ellipse cover,  #001225 0%, #000000 100%); /* FF3.6+ */
+		background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#001225), color-stop(100%,#000000)); /* Chrome,Safari4+ */
+		background: -webkit-radial-gradient(center, ellipse cover,  #001225 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-radial-gradient(center, ellipse cover,  #001225 0%,#000000 100%); /* Opera 12+ */
+		background: -ms-radial-gradient(center, ellipse cover,  #001225 0%,#000000 100%); /* IE10+ */
+		background: radial-gradient(ellipse at center,  #001225 0%,#000000 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#001225', endColorstr='#000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+.stars {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-repeat: repeat;
+}
+.small.stars {
+	background-image: url("img/smallStars.png");
+}
+.large.stars {
+	background-image: url("img/largeStars.png");
 }
 canvas {
     pointer-events: none;
