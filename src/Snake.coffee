@@ -36,7 +36,7 @@ class Snake
     for i in [0..num-1]
       rad = radius*(1-i/num)
       pos = pos.plus(new Vec2(springLen, 0))
-      @particles.push(new Particle(pos, rad, color, new Vec2(0,0)))
+      @particles.push(new Particle(pos, rad, @color, new Vec2(0,0))) # Color
     @particles[0].head = true
     @head = @particles[0]
     # Springs

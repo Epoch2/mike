@@ -7,6 +7,9 @@ Vec2 = MIKE.Vec2
 
 class ClientGame extends Game
   constructor: (@canvas) ->
+    super()
+
+    console.log @accumulator
 
     # Render context
     @ctx = @canvas.getContext("2d")
@@ -70,7 +73,7 @@ class ClientGame extends Game
     client.snake.update dt for client in @clients
 
   render: (blending) ->
-    @ctx.clearRect 0, 0, canvas.width, canvas.height
+    @ctx.clearRect 0, 0, @canvas.width, @canvas.height
     client.snake.render @ctx, blending for client in @clients
 
   gameLoop: ->
@@ -86,17 +89,17 @@ class ClientGame extends Game
 
     # Update physics in PYSICS_DT chunks
     while @accumulator >= @PHYSICS_DT
-      update @PHYSICS_DT
+      @update @PHYSICS_DT
       @t += @PHYSICS_DT
       @accumulator -= @PHYSICS_DT
 
     # Render with blending
     blending = @accumulator / @PHYSICS_DT
-    render @blending
+    @render blending
 
     @fpsStats.end() if @fpsStats?
     @msStats.end() if @msStats?
 
-    requestAnimationFrame gameLoop
+    requestAnimFrame(=>@gameLoop())
 
 MIKE.ClientGame = ClientGame
