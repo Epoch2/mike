@@ -34,6 +34,10 @@ class Particle
     ctx.fillStyle = @color
     ctx.fill()
 
+  getPos: -> @currPos.copy()
+  getRad: -> @radius
+  getVel: -> @vel.copy()
+
 unless window?
   module.exports = exports
   exports.Particle = Particle

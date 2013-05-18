@@ -9,10 +9,15 @@ else
   Particle = MIKE.Particle
   Maths = MIKE.Maths
 
-class BasicSnake
+class Snake
   constructor: (position, @color, @name) ->
     @anim = 0
     @dir = new Vec2(-1, 0)
+
+    # Controles
+    @move = false
+    @left = false
+    @right = false
 
     # Options
     @speed = 0.005
@@ -38,14 +43,10 @@ class BasicSnake
     for i in [0.. num-2]
       @springs.push(new Spring(@particles[i], @particles[i+1], springConst, springLen, springFriction))
 
-  getPos: ->
-    @particles[0].currPos.copy()
-  getVel: ->
-    @particles[0].vel.copy()
-  getDir: ->
-    @dir.copy()
-  getRad: ->
-    @particles[0].radius
+  getPos: -> @particles[0].getPos()
+  getVel: -> @particles[0].getVel()
+  getDir: -> @dir.copy()
+  getRad: -> @particles[0].getRad()
 
   correctionUpdate: (pos, vel, dir) ->
     @currPos = pos
@@ -60,23 +61,6 @@ class BasicSnake
     ctx.fillStyle = "#fff"
     pos = @particles[0].currPos.plus(new Vec2(@name.split("").length * -3, -20))
     ctx.fillText(@name, pos.x, pos.y)
-
-class OtherSnake extends BasicSnake
-  update: (dt) ->
-    for spring in @springs
-      spring.solve()
-
-      @particles[0].vel.add(@dir.times_s(@speed))
-
-    for particle in @particles
-      particle.update(dt)
-
-class ControllableSnake extends BasicSnake
-  constructor: (position, color, name) ->
-    super(position, color, name)
-    @move = false
-    @left = false
-    @right = false
 
   update: (dt) ->
     for spring in @springs
@@ -95,10 +79,6 @@ class ControllableSnake extends BasicSnake
 
 unless window?
   module.exports = exports
-  exports.BasicSnake = BasicSnake
-  exports.OtherSnake = OtherSnake
-  exports.ControllableSnake = ControllableSnake
+  exports.Snake = Snake
 else
-  MIKE.BasicSnake = BasicSnake
-  MIKE.OtherSnake = OtherSnake
-  MIKE.ControllableSnake = ControllableSnake
+  MIKE.Snake = Snake
