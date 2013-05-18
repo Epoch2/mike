@@ -78,6 +78,14 @@ class MikeServer
           }
         }
 
+        for cli in @clients
+          client.connection.transmit(MS.serialize({
+            type: TYPES.NEW_CLIENT,
+            data: {
+
+            }
+            }))
+
         @clients.push(client)
       )
     else

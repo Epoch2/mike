@@ -64,7 +64,6 @@ class ClientGame extends Game
       @clients.splice(i,1) for client, i in @clients when client.id is id
 
     @server.on "client:pos_upd", (update) =>
-      console.log update
       # Update position of client with id "id"
       for client in @clients
         if client.id is update.id

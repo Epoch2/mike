@@ -43,4 +43,14 @@ class Robert extends Emitter
         }
       }))
 
+  sendMovementUpdate: (move, left, right) ->
+    @connection.transmit(MS.serialize({
+      type: TYPES.MOV_UPD,
+      data: {
+        move: move,
+        left: left,
+        right: right
+      }
+    }))
+
 MIKE.Robert = Robert
