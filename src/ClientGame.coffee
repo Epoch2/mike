@@ -28,17 +28,15 @@ class ClientGame extends Game
     document.body.appendChild @msStats.domElement
 
     @currentTime = performance.now()
-    @snakes = []
+    @clients = []
     @server = new Robert("ws://127.0.0.1:1337")
     console.log @server
 
-    @server.on "invite", (@gameStart, color, acceptInvite) =>
+    @server.on "game:invite", (@gameStart, color, acceptInvite) =>
       name = "Mike"
       player = new MikeClient()
-      console.log player
       snake = new ControllableSnake(new Vec2(300, 300), color, name)
-      console.log snake
-      player.addSnake(new ControllableSnake(new Vec2(300,300), color, name))
+      player.addSnake(snake)
       console.log player
 
       Keyboard.bind "press", { key: 38, callback: (-> snake.move = true) }
@@ -48,21 +46,31 @@ class ClientGame extends Game
       Keyboard.bind "press", { key: 37, callback: (-> snake.left = true) }
       Keyboard.bind "release", { key: 37, callback: (-> snake.left = false) }
 
-      @snakes.push player
-      console.log @snakes
+      @clients.push player
+      console.log @clients
 
       acceptInvite(name)
 
-    @server.on("new_clients", (client) =>
-      @snakes.push client
-    )
+    @server.on "client:new", (client) =>
+      @clients.push client
+
+    @server.on "client:remove", (id) =>
+      @clients.splice(i,1) for client, i in @clients when client.id is id
+
+    @server.on "client:pos_upd", (update) =>
+      console.log update.pos
+      # Update position of client with id "id"
+      for client in @clients
+        if client.id is update.id
+          client.snake.correctionUpdate(update.pos, update.vel, update.dir)
+          break
 
   update: (dt) ->
-    snake.update dt for snake in @snakes
+    client.snake.update dt for client in @clients
 
   render: (blending) ->
     @ctx.clearRect 0, 0, canvas.width, canvas.height
-    snake.render @ctx, blending for snake in @snakes
+    client.snake.render @ctx, blending for client in @clients
 
   gameLoop: ->
     @fpsStats.begin() if @fpsStats?

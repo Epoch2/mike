@@ -11,7 +11,6 @@ else
 
 class MikeClient extends Emitter
   constructor: (@connection) ->
-    console.log @connection
     if @connection?
       @connection.on "message", (msg) =>
         @emit "message", msg

@@ -27,7 +27,7 @@ class BasicSnake
 
     # Particles
     pos = new Vec2(position.x, position.y)
-    for i in [0.. num-1]
+    for i in [0..num-1]
       rad = radius*(1-i/num)
       pos = pos.plus(new Vec2(springLen, 0))
       @particles.push(new Particle(pos, rad, color, new Vec2(0,0)))
@@ -52,7 +52,7 @@ class BasicSnake
     @dir = dir
 
   render: (ctx, blending) ->
-    for i in [@particles.length-1.. 0]
+    for i in [@particles.length-1..0]
       @particles[i].render(ctx, blending)
 
     ctx.font = "15px Arial"

@@ -6,13 +6,15 @@ else
 class NetTypes
   # Static
   @TYPE_LENGTH: 2
-  @TYPES: {
-    PING: "00",
-    INV: "01"
-    INV_RES: "02",
-    MOV_UPD: "03",
-    POS_UPD: "04",
-    NEW_CLIENT: "05"
+  @TYPES: {             # ID Description                Directionality (< = server-to-client, > = client-to-server)
+    PING: "00",         # 00 Ping                       <>
+    PONG: "01",         # 01 Pong                       <>
+    INV: "02",          # 02 Game invitation            <
+    INV_RES: "03",      # 03 Game invitation response   >
+    MOV_UPD: "04",      # 04 Input update               >
+    POS_UPD: "05",      # 05 Position update            <
+    NEW_CLIENT: "06",   # 06 Add client                 <
+    DEL_CLIENT: "07"    # 07 Remove client              <
   }
 
 class MessageSerializer
@@ -26,25 +28,32 @@ class MessageSerializer
 
   # Message structure descriptions
   @STRUCTURES: {}
+  @STRUCTURES[@TYPES.PING] = {"id": "number", "sent": "number"}
+  @STRUCTURES[@TYPES.PONG] = {"id": "number", "sent": "number"}
   @STRUCTURES[@TYPES.INV] = {"color": "string", "gameStart": "number"}
   @STRUCTURES[@TYPES.INV_RES] = {"accept": "boolean", "color": "string", "name": "string"}
   @STRUCTURES[@TYPES.MOV_UPD] = {"move": "boolean", "left": "boolean", "right": "boolean"}
   @STRUCTURES[@TYPES.POS_UPD] = {"id": "number", "pos": "object", "vel": "object", "dir": "object"}
   @STRUCTURES[@TYPES.NEW_CLIENT] = {"id": "number", "name": "string", "color": "string", "pos": "object"}
+  @STRUCTURES[@TYPES.DEL_CLIENT] = {"id": "number"}
 
   # Compression patterns
   @COMPRESSION_PATTERNS: {}
+  @COMPRESSION_PATTERNS[@TYPES.PING] = ["id", "sent"]
+  @COMPRESSION_PATTERNS[@TYPES.PONG] = ["id", "sent"]
   @COMPRESSION_PATTERNS[@TYPES.INV] = ["color", "gameStart"]
   @COMPRESSION_PATTERNS[@TYPES.INV_RES] = ["accept", "color", "name"]
   @COMPRESSION_PATTERNS[@TYPES.MOV_UPD] = ["move", "left", "right"]
   @COMPRESSION_PATTERNS[@TYPES.POS_UPD] = ["id", "pos", "vel", "dir"]
   @COMPRESSION_PATTERNS[@TYPES.NEW_CLIENT] = ["id", "name", "color", "pos"]
+  @COMPRESSION_PATTERNS[@TYPES.DEL_CLIENT] = ["id"]
 
   # Classes with serialization methods
   @COMPRESSIBLE_CLASSES: [Vec2]
 
   @serialize: (msg_obj) ->
-    return false unless @assertType(msg_obj.type, msg_obj.data)
+    console.log "Type: #{msg_obj.type}"
+    throw("THOSEUSOEUt") unless @assertType(msg_obj.type, msg_obj.data)
     out = msg_obj.type # Always prepend fixed length type
     out += @compress(msg_obj.type, msg_obj.data)
     return out
@@ -105,7 +114,6 @@ class MessageSerializer
       for key in @COMPRESSION_PATTERNS[type]
         val = vals[i]
         if val[0] is @OBJECT_IDENT
-          console.log val
           # This val is an object
           # Deserialize it correctly by determining its type with the type identifier at val[1]
           (out[key] = cla.deserialize(val); break) for cla in @COMPRESSIBLE_CLASSES when val[1] is cla.TYPE_IDENT
@@ -130,6 +138,8 @@ class MessageSerializer
     return @assertKeys(obj, @STRUCTURES[type])
 
   @assertKeys: (obj, checks) ->
+    console.log obj
+    console.log checks
     # Asserts that an object, 'obj', contains the keys
     # specified in 'checks', and that their values
     # are of the specified type.

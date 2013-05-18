@@ -14,23 +14,25 @@ class Robert extends Emitter
     @connection.on "ready", =>
       @ready = true
 
-    @connection.on "message", (message) => # When is message used?
+    @connection.on "message", (message) =>
+      console.log message
       @handleMessage(MS.deserialize(message)) if @ready
 
   handleMessage: (msg) ->
     switch msg.type
       when TYPES.INV
         @assignedColor = msg.data.color
-        @emit "invite", msg.data.gameStart, msg.data.color, @acceptInvite
+        @emit "game:invite", msg.data.gameStart, msg.data.color, @acceptInvite
 
       when TYPES.POS_UPD
-        @emit "pos_upd", msg.data
+        console.log msg.data
+        @emit "client:pos_upd", msg.data
 
       when TYPES.NEW_CLIENT
         newClient = new MikeClient()
         newClient.id = msg.data.id
         newClient.addSnake(new OtherSnake(msg.data.pos, msg.data.color, msg.data.name))
-        @emit "new_client", newClient
+        @emit "client:new", newClient
 
   acceptInvite: (name) =>
     if name?

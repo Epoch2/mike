@@ -7,13 +7,17 @@ class ServerGame extends Game
     return (t[0] * 1e9 + t[1])/1000
 
   constructor: (@clients) ->
-    throw "Server-side MikeGame constructor needs client array!" unless @clients?
+    throw "ServerGame constructor requires clients[] arg" unless @clients?
+    @NET_UPDATE_FREQ = 1000/60
     @currentTime = ServerGame.time()
+    @a = 0
 
   update: (dt) ->
     client.update dt for client in @clients
 
   gameLoop: ->
+    @a++
+    console.log @a
     newTime = ServerGame.time()
     frameTime = Math.min(newTime-@currentTime, @MAX_RENDER_DT)
     @currentTime = ServerGame.time()
@@ -27,7 +31,7 @@ class ServerGame extends Game
       @t += @PHYSICS_DT
       @accumulator -= @PHYSICS_DT
 
-    setTimeout(@gameLoop, 5)
+    setTimeout (=> @gameLoop()), @PHYSICS_DT
 
 module.exports = exports
 exports.ServerGame = ServerGame

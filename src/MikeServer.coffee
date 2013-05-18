@@ -1,7 +1,8 @@
 ConnectionServer = require("./ConnectionServer.js").ConnectionServer
 Emitter = require("./Emitter.js").Emitter
 ColorUtil = require("./ColorUtil.js").ColorUtil
-Snake = require("./Snake.js").Snake
+ControllableSnake = require("./Snake.js").ControllableSnake
+Vec2 = require("./Vec2.js").Vec2
 MikeClient = require("./MikeClient.js").MikeClient
 ServerGame = require("./ServerGame.js").ServerGame
 MS = require("./Net.js").MessageSerializer
@@ -12,7 +13,7 @@ class MikeServer
     @connectionserver = new ConnectionServer(config)
     @clients = []
     @activeColors = []
-    @NET_UPDATE_FREQ = 1000/60
+    @NET_UPDATE_DT = 1000/60
 
     @connectionserver.on "new", (connection) =>
       client = new MikeClient(connection)
@@ -38,7 +39,7 @@ class MikeServer
         y = Math.random()*200
         snake = new ControllableSnake(new Vec2(x, y), client.color, msg.data.name)
         client.addSnake snake
-        addClient(client) if msg.data.color is client.color and msg.data.accept
+        @addClient(client) if msg.data.color is client.color and msg.data.accept
 
       when TYPES.MOV_UPD
         return false unless getClient(client)? # Don't update nonexistent clients
@@ -47,7 +48,7 @@ class MikeServer
         client.snake.right = msg.data.right
 
   broadcast: (message) ->
-    client.transmit(MS.serialize(message)) for client in @clients
+    client.connection.transmit(MS.serialize(message)) for client in @clients
 
   addClient: (client) ->
     if client.connection? and client.snake?
@@ -57,16 +58,17 @@ class MikeServer
       # (null pointer prevention)
       client.on "disconnect", =>
         @delClient(client)
-      @clients.push(client)
       @broadcast {
         type: TYPES.NEW_CLIENT,
         data: {
           id: client.id,
           name: client.snake.name,
           color: client.snake.color,
-          pos: client.snake.initPos
+          pos: client.snake.getPos()
         }
       }
+
+      @clients.push(client)
 
   delClient: (client) ->
     @clients.splice(i,1) for cli, i in @clients when cli is client
@@ -99,20 +101,22 @@ class MikeServer
 
   broadcastLoop: ->
     for client in @clients
-      broadcast {
+      console.log "innerloop"
+      MS.serialize({
         type: TYPES.POS_UPD,
         data: {
           id: client.id,
-          pos: client.snake.getPos(),
-          vel: client.snake.getVel(),
-          dir: client.snake.getDir()
+          pos: new Vec2(10, 10),
+          vel: new Vec2(10, 10),
+          dir: new Vec2(10, 10)
         }
-      }
-    this()
+      })
+    setTimeout (=> @broadcastLoop()), @NET_UPDATE_DT
 
   runGame: ->
-    game = new ServerGame(@clients)
-    game.gameLoop()
+    #game = new ServerGame(@clients)
+    #game.gameLoop()
+    @broadcastLoop()
 
 config = {
   https: false,
