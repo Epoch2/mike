@@ -10,6 +10,8 @@ class ClientGame extends Game
     super()
 
     console.log @accumulator
+    console.log @MAX_RENDER_DT
+    console.log @t
 
     # Render context
     @ctx = @canvas.getContext("2d")

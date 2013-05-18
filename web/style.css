@@ -14,7 +14,7 @@ canvas {
     pointer-events: none;
     display: block;
 }      
-.box {
+#msgBox {
 	position: absolute;
 	background-color: #fff;
 	border-radius: 10px;
@@ -26,7 +26,7 @@ canvas {
 	margin-left: -250px;
 }
 
-.box header {
+#msgBox header {
 	background-color: #f5f5f5;
 	border-radius: 10px 10px 0px 0px;
 	padding: 20px;
@@ -35,18 +35,18 @@ canvas {
 	margin-bottom: 10px;
 }
 
-.box h1 {
+#msgBox h1 {
 	margin: 0px;
 	padding: 0px;
 	line-height: 100%;
 	text-shadow: 0 1px 0 #fff;
 }
 
-.box p {
+#msgBox p {
 	padding: 5px 20px;
 }
 
-.box input[type="text"] {
+#msgBox input[type="text"] {
 	width: 200px;
 	border: 1px solid #ccc;
 	padding: 7px;
@@ -54,7 +54,7 @@ canvas {
 	width: 100%;
 }
 
-.box a.button {
+#msgBox a.button {
 	background-color: #5bb75b;
 	border-radius: 5px;
 	text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
@@ -68,32 +68,37 @@ canvas {
 	margin: 5px 0;
 }
 
-.box p.footer {
+#msgBox footer {
 	text-align: center;
 }
 
-.box p.footer a {
+#msgBox footer a {
 	text-decoration: none;
 	color: #1976c5;
 }
 
-.box p.footer a:hover {
+#msgBox footer a:hover {
 	text-decoration: underline;
 }
 
-.box table {
+#msgBox table {
 	width: 100%;
 }
 
-.box table tr td {
+/* Select the 3 first rows */
+#msgBox table tr:nth-child(n+0):nth-child(-n+3) td {
+	font-weight: bold;
+}
+
+#msgBox table tr td {
 	padding: 0px 20px;
 }
 
-.box table tr td:last-child {
+#msgBox table tr td:last-child {
 	text-align: right;
 }
 
-.box .yscroll {
+#msgBox .yscroll {
 	overflow-y: scroll;
 	position: relative;
 	height: 253px;
