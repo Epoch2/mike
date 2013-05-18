@@ -33,6 +33,7 @@ class ClientGame extends Game
     console.log @server
 
     @server.on "game:invite", (@gameStart, color, acceptInvite) =>
+      console.log "game:invite"
       name = "Mike"
       player = new MikeClient()
       snake = new ControllableSnake(new Vec2(300, 300), color, name)
@@ -58,7 +59,7 @@ class ClientGame extends Game
       @clients.splice(i,1) for client, i in @clients when client.id is id
 
     @server.on "client:pos_upd", (update) =>
-      console.log update.pos
+      console.log "client:pos_upd"
       # Update position of client with id "id"
       for client in @clients
         if client.id is update.id
