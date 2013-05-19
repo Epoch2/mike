@@ -23,28 +23,24 @@ class MikeServer
       return (t[0] * 1e9 + t[1])/1000000
 
     @connectionserver.on "new", (connection) =>
-      console.log "MS new connection"
       client = new MikeClient(connection)
 
       client.on "message", (msg) =>
+        console.log client
         @handleClientMessage(MS.deserialize(msg), client)
 
-      @genColor (color) =>
-        client.color = color
-        client.connection.transmit(MS.serialize({
-            type: TYPES.INV,
-            data: {
-              color: color,
-              gameStart: 23049
-            }
-          }))
+      client.connection.readyCheck =>
+        @genColor (color) =>
+          client.color = color
+          client.connection.transmit(MS.serialize({
+              type: TYPES.INV,
+              data: {
+                color: color,
+                gameStart: 23049
+              }
+            }))
 
   handleClientMessage: (msg, client) ->
-    if @cl_c?.id isnt client?.id
-      console.log "DIFFERENT CLIENT"
-      @cl_c = client
-    else
-      console.log "SAME CLIENT"
     switch msg.type
       when TYPES.INV_RES
         console.log "INV_RES"
@@ -90,19 +86,15 @@ class MikeServer
               }))
 
       when TYPES.MOV_UPD
-        console.log "Movupd: #{client.id}"
-        return false unless @clientExists(client) # Don't update nonexistent clients
-        client.snake.move = msg.data.move
-        client.snake.left = msg.data.left
-        client.snake.right = msg.data.right
+        @clientExistsAsync (exists) => # Don't update nonexistent clients
+          if exists
+            client.snake.move = msg.data.move
+            client.snake.left = msg.data.left
+            client.snake.right = msg.data.right
 
   broadcast: (message, exceptions...) ->
     process.nextTick(=>
-      for client in @clients
-        excepted = false
-        for exp in exceptions
-          excepted = if client.id is exp.id then true else false
-        client.connection.transmit(MS.serialize(message)) unless excepted
+      client.connection.transmit(MS.serialize(message)) for client in @clients when not (client in exceptions)
     )
 
   addClient: (client) ->
@@ -110,13 +102,13 @@ class MikeServer
       # Make sure client is removed upon disconnect
       # (null pointer prevention)
       client.on "disconnect", =>
-        @delClientByID(client.id)
-        @broadcast {
+        @delClientAsync(client)
+        @broadcast({
           type: TYPES.DEL_CLIENT,
           data: {
             id: client.id
           }
-        }, client
+        }, client)
 
       @clients.push(client)
     else
@@ -167,12 +159,11 @@ class MikeServer
     process.nextTick(=>
       comparison = 1
       while comparison >= 0.8
+        comparison = 0
         newColor = ColorUtil.niceColor()
         if @activeColors.length > 0
           for activeColor in @activeColors
             comparison = Math.max(comparison, ColorUtil.compareColors(newColor, activeColor))
-        else
-          comparison = 0
       @activeColors.push(newColor)
       callback(newColor)
     )

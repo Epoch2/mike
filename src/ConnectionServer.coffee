@@ -8,12 +8,16 @@ class ConnectionServer extends Emitter
   constructor: (@config) ->
     server = if @config?.https is true then https.createServer(config) else http.createServer()
     server.listen(@config.port or 1337)
+    @wscount = 0
 
     @wss = new WebSocketServer({server: server})
 
     @wss.on "connection", (ws) =>
-      client = new Connection(ws)
-      @emit "new", client
+      console.log "WS exists: #{ws?}"
+      console.log "Connection class exists: #{Connection?}"
+      conn = new Connection(ws)
+      console.log "Connection created in ConnectionServer"
+      @emit "new", conn
 
 module.exports = exports
 exports.ConnectionServer = ConnectionServer

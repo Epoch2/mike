@@ -1,5 +1,6 @@
 unless window?
   Emitter = require("./Emitter.js").Emitter
+  WebSocket = require("ws")
 else
   Emitter = MIKE.Emitter
 
@@ -9,11 +10,17 @@ class Connection extends Emitter
   # server-side WebSocket implementations
 
   constructor: (@ws) ->
+    console.log "Connection constructor init"
     unless window?
       @ws.on "message", (message) =>
         @emit "message", message
 
+      @ws.on "open", =>
+        console.log "WebSocket ready."
+        @emit "ready"
+
       @ws.on "close", (code, reason) =>
+        console.log "WebSocket closed."
         @emit "close", code, reason
 
     else
@@ -25,6 +32,18 @@ class Connection extends Emitter
 
       @ws.onclose = (evt) =>
         @emit "close", evt.code, evt.reason
+
+    console.log "Connection constructor done."
+
+  readyCheck: (callback) ->
+    if @ws.readyState is WebSocket.OPEN
+      if callback? and typeof callback is "function"
+        callback()
+        return
+      else
+        throw "readyCheck: invalid callback of type #{typeof callback}"
+    else
+      setTimeout (=> @readyCheck(callback)), 0  # Put this on the call stack
 
   transmit: (msg) ->
     try
