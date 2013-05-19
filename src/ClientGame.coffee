@@ -30,13 +30,13 @@ class ClientGame extends Game
 
     @currentTime = performance.now()
     @clients = []
-    @server = new Robert("ws://127.0.0.1:1337")
-    #@server = new Robert("ws://arch.jvester.se:1337")
+    #@server = new Robert("ws://127.0.0.1:1337")
+    @server = new Robert("ws://arch.jvester.se:1337")
     console.log @server
 
     @server.on "game:invite", (@gameStart, color, acceptInvite) =>
-      #name = prompt("Enter your name", "here")
-      name = colora
+      #name = prompt("Enter your name", "Mike")
+      name = color
       acceptInvite(name)
 
     @server.on "client:player", (client) =>
@@ -47,6 +47,7 @@ class ClientGame extends Game
       Keyboard.bind "press", { key: 37, callback: (=> client.snake.left = true; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
       Keyboard.bind "release", { key: 37, callback: (=> client.snake.left = false; @server.sendMovUpdate(client.snake.move, client.snake.left, client.snake.right)) }
       @clients.push client
+      @player = client
       console.log "In control of ##{client.id}"
 
     @server.on "client:new", (client) =>
@@ -63,8 +64,13 @@ class ClientGame extends Game
           client.snake.correctionUpdate(update.pos.copy(), update.vel.copy(), update.dir.copy())
           break
 
+    @$largeStars = $("div.large.stars")
+    @$smallStars = $("div.small.stars")
+
   update: (dt) ->
     client.snake.update dt for client in @clients
+    @$smallStars.css("background-position", Math.floor(@player.snake.getPos().x*-0.15)+"px "+Math.floor(@player.snake.getPos().y*-0.15)+"px") if @player?
+    @$largeStars.css("background-position", Math.floor(@player.snake.getPos().x*-0.2)+"px "+Math.floor(@player.snake.getPos().y*-0.2)+"px") if @player?
 
   render: (blending) ->
     @ctx.clearRect 0, 0, @canvas.width, @canvas.height

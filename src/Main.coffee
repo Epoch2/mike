@@ -12,4 +12,5 @@ resizeCanvas(canvas)
 
 # Get the ball rolling
 clientGame = new ClientGame(canvas)
+window.clientGame = clientGame
 clientGame.gameLoop()

@@ -72,8 +72,8 @@ class Snake
       @dir.rotate(Maths.toRadians(0.5)) if @left
       @dir.rotate(Maths.toRadians(Math.sin(@anim+=0.04)))
       @head.vel.add(@dir.times_s(@speed))
-    else
-      @dir = @head.currPos.minus(@particles[2].currPos).unit()
+    #else
+      #@dir = @head.currPos.minus(@particles[2].currPos).unit()
 
     for particle in @particles
       particle.update(dt)
