@@ -86,7 +86,7 @@ class MikeServer
               }))
 
       when TYPES.MOV_UPD
-        @clientExistsAsync (exists) => # Don't update nonexistent clients
+        @clientExistsAsync client, (exists) => # Don't update nonexistent clients
           if exists
             client.snake.move = msg.data.move
             client.snake.left = msg.data.left
