@@ -10,7 +10,6 @@ class Connection extends Emitter
   # server-side WebSocket implementations
 
   constructor: (@ws) ->
-    console.log "Connection constructor init"
     unless window?
       @ws.on "message", (message) =>
         @emit "message", message
@@ -30,8 +29,6 @@ class Connection extends Emitter
 
       @ws.onclose = (evt) =>
         @emit "close", evt.code, evt.reason
-
-    console.log "Connection constructor done."
 
   readyCheck: (callback) ->
     if @ws.readyState is WebSocket.OPEN
