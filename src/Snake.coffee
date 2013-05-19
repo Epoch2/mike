@@ -80,7 +80,6 @@ class ClientSnake extends BasicSnake
     @correctionDir = @dir
 
   correctionUpdate: (pos, vel, dir) ->
-    console.log "Correction update!" if @iterations % 200 is 0
     currTime = performance.now()
     @correctionBlendTime = currTime - @correctionPrevTime
     @correctionPrevTime = currTime
@@ -125,8 +124,6 @@ class ServerSnake extends BasicSnake
 
 unless window?
   module.exports = exports
-  exports.ClientSnake = ClientSnake
-  exports.ServerSnake = ServerSnake
+  exports.Snake = Snake
 else
-  MIKE.ClientSnake = ClientSnake
-  MIKE.ServerSnake = ServerSnake
+  MIKE.Snake = Snake
