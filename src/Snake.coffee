@@ -71,20 +71,20 @@ class ClientSnake extends BasicSnake
   constructor: (position, color, name) ->
     super(position, color, name)
 
+    @consoleBuffer = ""
+
     # Correction Blending
     @correctionBlendTime = 1
     @correctionPrevTime = performance.now()
-    @correctionTime = 0
     @correctionPos = @head.getPos()
     @correctionVel = @head.getVel()
     @correctionDir = @dir
 
   correctionUpdate: (pos, vel, dir) ->
-    console.log "Correction Update" if @iterations % 200 is 0
+    consoleBuffer += "------------\nCorrection Update\n------------\n"
     currTime = performance.now()
     @correctionBlendTime = currTime - @correctionPrevTime
     @correctionPrevTime = currTime
-    @correctionTime = 0
 
     @correctionPos = pos
     @correctornVel = vel
@@ -99,12 +99,17 @@ class ClientSnake extends BasicSnake
   update: (dt) ->
     super(dt)
     # Correction blending
-    blending = Math.min(@correctionTime / @correctionBlendTime, 1)
-    console.log("time: "+@correctionTime+", blendTime"+@correctionBlendTime) if @iterations % 200 is 0
+    correctionTime = performance.now() - @correctionPrevTime
+    blending = Math.min(correctionTime / @correctionBlendTime, 1)
+    @consoleBuffer += blending+"\n"
+
+    if @iterations % 200 is 0
+      console.log @consoleBuffer
+      @consoleBuffer = ""
+
     @head.currPos = @correctionPos.times_s(blending).plus(@head.getPos().times_s(1-blending))
     @head.vel = @correctionVel.times_s(blending).plus(@head.getVel().times_s(1-blending))
     @dir = @correctionDir.times_s(blending).plus(@dir.times_s(1-blending))
-    @correctionTime += dt
     @dir.normalize()
 
   render: (ctx, blending) ->
