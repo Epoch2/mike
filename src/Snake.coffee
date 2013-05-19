@@ -9,10 +9,11 @@ else
   Particle = MIKE.Particle
   Maths = MIKE.Maths
 
-class Snake
+class BasicSnake
   constructor: (position, color, @name) ->
     @anim = 0
     @dir = new Vec2(-1, 0)
+    @iterations = 0
 
     # Controles
     @move = false
@@ -49,10 +50,61 @@ class Snake
   getRad: -> @head.getRad()
   getColor: -> @head.getColor()
 
+  update: (dt) ->
+    @iterations++
+
+    for spring in @springs
+      spring.solve()
+
+    if @move
+      @dir.rotate(Maths.toRadians(-0.5)) if @right
+      @dir.rotate(Maths.toRadians(0.5)) if @left
+      @dir.rotate(Maths.toRadians(Math.sin(@anim+=0.04)))
+      @head.vel.add(@dir.times_s(@speed))
+    #else
+      #@dir = @head.getPos().minus(@particles[2].getPos()).unit()
+
+    for particle in @particles
+      particle.update(dt)
+
+class ClientSnake extends BasicSnake
+  constructor: (position, color, name) ->
+    super(position, color, name)
+
+    # Correction Blending
+    @correctionBlendTime = 1
+    @correctionPrevTime = performance.now()
+    @correctionTime = 0
+    @correctionPos = @head.getPos()
+    @correctionVel = @head.getVel()
+    @correctionDir = @dir
+
   correctionUpdate: (pos, vel, dir) ->
+    currTime = performance.now()
+    @correctionBlendTime = currTime - @correctionPrevTime
+    @correctionPrevTime = currTime
+    @correctionTime = 0
+
+    @correctionPos = pos
+    @correctornVel = vel
+    @correctionDir = dir
+
+    ###
     @head.currPos = pos
     @head.vel = vel
     @dir = dir
+    ###
+
+  update: (dt) ->
+    super(dt)
+    # Correction blending
+    blending = Math.min(@correctionTime / @correctionBlendTime, 1)
+    console.log("time: "+@correctionTime+", blendTime"+@correctionBlendTime) if @iterations % 200 is 0
+    @head.currPos = @correctionPos.times_s(blending).plus(@head.getPos().times_s(1-blending))
+    @head.vel = @correctionVel.times_s(blending).plus(@head.getVel().times_s(1-blending))
+    @dir = @correctionDir.times_s(blending).plus(@dir.times_s(1-blending))
+    @correctionTime += dt
+    @dir.normalize()
 
   render: (ctx, blending) ->
     for i in [@particles.length-1..0]
@@ -63,20 +115,12 @@ class Snake
     pos = @head.currPos.plus(new Vec2(@name.split("").length * -3, -20))
     ctx.fillText(@name, pos.x, pos.y)
 
-  update: (dt) ->
-    for spring in @springs
-      spring.solve()
+class ServerSnake extends BasicSnake
+  constructor: (position, color, name) ->
+      super(position, color, name)
 
-    if @move
-      @dir.rotate(Maths.toRadians(-0.5)) if @right
-      @dir.rotate(Maths.toRadians(0.5)) if @left
-      @dir.rotate(Maths.toRadians(Math.sin(@anim+=0.04)))
-      @head.vel.add(@dir.times_s(@speed))
-    #else
-      #@dir = @head.currPos.minus(@particles[2].currPos).unit()
 
-    for particle in @particles
-      particle.update(dt)
+
 
 unless window?
   module.exports = exports
