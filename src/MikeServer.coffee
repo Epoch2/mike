@@ -14,7 +14,7 @@ class MikeServer
     @clients = []
     @IDs = 0
     @activeColors = []
-    @NET_UPDATE_DT = 1000/60
+    @NET_UPDATE_DT = 1000/2
     @msg_count = 0
     @cl_c = null
 
@@ -26,7 +26,6 @@ class MikeServer
       client = new MikeClient(connection)
 
       client.on "message", (msg) =>
-        console.log client
         @handleClientMessage(MS.deserialize(msg), client)
 
       client.connection.readyCheck =>
@@ -93,9 +92,7 @@ class MikeServer
             client.snake.right = msg.data.right
 
   broadcast: (message, exceptions...) ->
-    process.nextTick(=>
-      client.connection.transmit(MS.serialize(message)) for client in @clients when not (client in exceptions)
-    )
+    client.connection.transmit(MS.serialize(message)) for client in @clients when not (client in exceptions)
 
   addClient: (client) ->
     if client.connection? and client.snake?

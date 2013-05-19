@@ -1,5 +1,4 @@
-unless window?
-  Game = require("./Game.js").Game
+Game = require("./Game.js").Game
 
 class ServerGame extends Game
   constructor: (@clients) ->
