@@ -16,11 +16,9 @@ class Connection extends Emitter
         @emit "message", message
 
       @ws.on "open", =>
-        console.log "WebSocket ready."
         @emit "ready"
 
       @ws.on "close", (code, reason) =>
-        console.log "WebSocket closed."
         @emit "close", code, reason
 
     else

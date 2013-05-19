@@ -13,10 +13,7 @@ class ConnectionServer extends Emitter
     @wss = new WebSocketServer({server: server})
 
     @wss.on "connection", (ws) =>
-      console.log "WS exists: #{ws?}"
-      console.log "Connection class exists: #{Connection?}"
       conn = new Connection(ws)
-      console.log "Connection created in ConnectionServer"
       @emit "new", conn
 
 module.exports = exports
