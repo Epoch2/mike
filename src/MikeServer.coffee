@@ -1,7 +1,7 @@
 ConnectionServer = require("./ConnectionServer.js").ConnectionServer
 Emitter = require("./Emitter.js").Emitter
 ColorUtil = require("./ColorUtil.js").ColorUtil
-Snake = require("./Snake.js").Snake
+ServerSnake = require("./Snake.js").ServerSnake
 Vec2 = require("./Vec2.js").Vec2
 MikeClient = require("./MikeClient.js").MikeClient
 ServerGame = require("./ServerGame.js").ServerGame
@@ -46,7 +46,7 @@ class MikeServer
         if msg.data.color is client.color and msg.data.accept
           x = Math.random()*600
           y = Math.random()*600
-          snake = new Snake(new Vec2(x, y), client.color, msg.data.name)
+          snake = new ServerSnake(new Vec2(x, y), client.color, msg.data.name)
           client.addSnake snake
           client.id = @IDs
           @IDs++

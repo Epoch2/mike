@@ -1,7 +1,7 @@
 Emitter = MIKE.Emitter
 Connection = MIKE.Connection
 MikeClient = MIKE.MikeClient
-Snake = MIKE.Snake
+ClientSnake = MIKE.ClientSnake
 MS = MIKE.MessageSerializer
 TYPES = MIKE.NetTypes.TYPES
 
@@ -29,13 +29,13 @@ class Robert extends Emitter
       when TYPES.NEW_CLIENT
         newClient = new MikeClient()
         newClient.id = msg.data.id
-        newClient.addSnake(new Snake(msg.data.pos, msg.data.color, msg.data.name))
+        newClient.addSnake(new ClientSnake(msg.data.pos, msg.data.color, msg.data.name))
         @emit "client:new", newClient
 
       when TYPES.PLR_CLIENT
         newClient = new MikeClient()
         newClient.id = msg.data.id
-        newClient.addSnake(new Snake(msg.data.pos, msg.data.color, msg.data.name))
+        newClient.addSnake(new ClientSnake(msg.data.pos, msg.data.color, msg.data.name))
         @emit "client:player", newClient
 
       when TYPES.DEL_CLIENT
