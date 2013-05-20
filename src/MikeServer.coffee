@@ -14,7 +14,7 @@ class MikeServer
     @clients = []
     @IDs = 0
     @activeColors = []
-    @NET_UPDATE_DT = 1000/2
+    @NET_UPDATE_DT = 1000/60
     @msg_count = 0
     @cl_c = null
 
