@@ -1,4 +1,4 @@
 mike
 ====
 
-This is the best game ever created. Period.
+MIKE - **M**ultiplayer **I**nteractive **K**eyboarding **E**xperience
