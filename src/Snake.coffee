@@ -81,7 +81,7 @@ class ClientSnake extends BasicSnake
     @correctionDir = @dir
 
   correctionUpdate: (pos, vel, dir) ->
-    consoleBuffer += "------------\nCorrection Update\n------------\n"
+    @consoleBuffer += "------------\nCorrection Update\n------------\n"
     currTime = performance.now()
     @correctionBlendTime = currTime - @correctionPrevTime
     @correctionPrevTime = currTime
@@ -107,9 +107,9 @@ class ClientSnake extends BasicSnake
       console.log @consoleBuffer
       @consoleBuffer = ""
 
-    @head.currPos = @correctionPos.times_s(blending).plus(@head.getPos().times_s(1-blending))
-    @head.vel = @correctionVel.times_s(blending).plus(@head.getVel().times_s(1-blending))
-    @dir = @correctionDir.times_s(blending).plus(@dir.times_s(1-blending))
+    @head.currPos = @correctionPos.times_s(blending).plus(@head.getPos().times_s(1.0-blending))
+    @head.vel = @correctionVel.times_s(blending).plus(@head.getVel().times_s(1.0-blending))
+    @dir = @correctionDir.times_s(blending).plus(@dir.times_s(1.0-blending))
     @dir.normalize()
 
   render: (ctx, blending) ->
