@@ -103,9 +103,11 @@ class ClientSnake extends BasicSnake
     blending = Math.min(correctionTime / @correctionBlendTime, 1)
     @consoleBuffer += blending+"\n"
 
+    ###
     if @iterations % 200 is 0
       console.log @consoleBuffer
       @consoleBuffer = ""
+    ###
 
     @head.currPos = @correctionPos.times_s(blending).plus(@head.getPos().times_s(1.0-blending))
     @head.vel = @correctionVel.times_s(blending).plus(@head.getVel().times_s(1.0-blending))
