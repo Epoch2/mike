@@ -16,11 +16,11 @@ class MikeServer
     @activeColors = []
     @NET_UPDATE_DT = 1000/60
     @msg_count = 0
-    @cl_c = null
+    @lastBroadcast = 0
 
     @time = ->
       t = process.hrtime()
-      return (t[0] * 1e9 + t[1])/1000000
+      return (t[0] * 1e9 + t[1])/1e6
 
     @connectionserver.on "new", (connection) =>
       client = new MikeClient(connection)
@@ -166,6 +166,8 @@ class MikeServer
     )
 
   broadcastLoop: ->
+    @lastBroadcast = @time()
+
     for client in @clients
       @broadcast({
         type: TYPES.POS_UPD,
@@ -177,7 +179,10 @@ class MikeServer
         }
       })
 
-    setTimeout (=> @broadcastLoop()), @NET_UPDATE_DT
+    pause = @NET_UPDATE_DT - (@time()-@lastBroadcast)
+    pause = if pause >= 0 then pause else 0
+
+    setTimeout (=> @broadcastLoop()), pause
 
   runGame: ->
     game = new ServerGame(@clients)
