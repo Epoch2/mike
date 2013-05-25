@@ -40,6 +40,9 @@ class Connection extends Emitter
     else
       setTimeout (=> @readyCheck(callback)), 0  # Put this on the call stack
 
+  close: (code, reason) ->
+    @ws.close(code, reason)
+
   transmit: (msg) ->
     try
       @ws.send(msg)
